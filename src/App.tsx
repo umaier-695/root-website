@@ -199,17 +199,44 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormSubmitted(true);
-    setTimeout(() => {
-      setAlias('');
-      setEmail('');
-      setSubject('');
-      setMessage('');
+
+    // Replace the string below with your free Web3Forms access key from web3forms.com
+    const ACCESS_KEY = "d3ebcb2b-9ec1-4268-85a0-cfed62657c1c"; // Default temporary registration key, replace with yours if needed
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          access_key: ACCESS_KEY,
+          name: alias,
+          email: email,
+          subject: subject,
+          message: message,
+        }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        alert("Payload transmission successful! Real email has been routed to my inbox.");
+        setAlias('');
+        setEmail('');
+        setSubject('');
+        setMessage('');
+      } else {
+        alert("Transmission failed: " + data.message);
+      }
+    } catch (err) {
+      alert("Transmission failed. Please verify your internet connection.");
+    } finally {
       setFormSubmitted(false);
-      alert('payload transmission successful. secure link established.');
-    }, 1500);
+    }
   };
 
   return (
