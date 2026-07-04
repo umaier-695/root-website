@@ -193,25 +193,6 @@ export default function App() {
   const [message, setMessage] = useState('');
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [formStatus, setFormStatus] = useState<{ type: 'success' | 'error' | null; message: string }>({ type: null, message: '' });
-  const [isLocked, setIsLocked] = useState(() => !localStorage.getItem('portfolio_unlocked'));
-  const [passInput, setPassInput] = useState('');
-  const [lockError, setLockError] = useState(false);
-  const [unlockSuccess, setUnlockSuccess] = useState(false);
-
-  const handleUnlock = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (passInput === 'umaier123') {
-      setUnlockSuccess(true);
-      setLockError(false);
-      setTimeout(() => {
-        localStorage.setItem('portfolio_unlocked', 'true');
-        setIsLocked(false);
-      }, 1000);
-    } else {
-      setLockError(true);
-      setPassInput('');
-    }
-  };
 
   const navigate = (page: PageType) => {
     setCurrentPage(page);
@@ -261,70 +242,12 @@ export default function App() {
   };
 
   return (
-    <div className="relative min-h-screen w-full bg-black text-white selection:bg-neutral-800 selection:text-white overflow-x-hidden flex flex-col justify-between">
+    <div className="relative min-h-screen w-full bg-black text-white selection:bg-neutral-800 selection:text-white overflow-x-hidden">
       {/* Background Mesh Network Canvas */}
-      <MeshBackground currentPage={isLocked ? 'home' : currentPage} />
+      <MeshBackground currentPage={currentPage} />
 
-      {isLocked ? (
-        <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6 w-full">
-          <div className="w-full max-w-sm bg-neutral-950/70 border border-white/5 p-8 rounded-2xl shadow-2xl shadow-black backdrop-blur-md space-y-6 text-center">
-            {/* Brand Logo */}
-            <div className="flex justify-center">
-              <div className="bg-neutral-900/90 p-3.5 rounded-full border border-white/10 shadow-lg animate-pulse">
-                <svg viewBox="0 0 256 256" className="h-7 w-7" fill="#ffffff">
-                  <path d="M 128 192 L 128 256 L 64.5 256 L 32 223 L 0 192 L 0 128 L 64 128 Z M 256 192 L 256 256 L 192.5 256 L 160 223 L 128 192 L 128 128 L 192 128 Z M 128 64 L 128 128 L 64.5 128 L 32 95 L 0 64 L 0 0 L 64 0 Z M 256 64 L 256 128 L 192.5 128 L 160 95 L 128 64 L 128 0 L 192 0 Z" fill="#ffffff" />
-                </svg>
-              </div>
-            </div>
-
-            <div className="space-y-1">
-              <span className="text-[9px] font-mono tracking-widest text-neutral-500 uppercase block">// SECURITY PORT</span>
-              <h2 className="text-lg font-semibold tracking-tight text-white font-readex">authorization required</h2>
-              <p className="text-xs text-neutral-400 font-light leading-relaxed">
-                This environment is encrypted. Please enter your authorization passkey to access the terminal.
-              </p>
-            </div>
-
-            <form onSubmit={handleUnlock} className="space-y-4">
-              <div className="space-y-2">
-                <input
-                  type="password"
-                  value={passInput}
-                  onChange={(e) => setPassInput(e.target.value)}
-                  placeholder="Enter key..."
-                  disabled={unlockSuccess}
-                  className="w-full bg-neutral-900/50 border border-white/5 rounded-xl px-4 py-3 text-sm text-white placeholder-neutral-700 focus:outline-none focus:border-white transition-colors text-center font-mono tracking-widest"
-                  required
-                  autoFocus
-                />
-              </div>
-
-              {lockError && (
-                <div className="p-3 rounded-xl text-[10px] font-mono border border-rose-500/30 bg-rose-500/10 text-rose-400">
-                  [ACCESS DENIED] INVALID SECURITY KEY
-                </div>
-              )}
-
-              {unlockSuccess && (
-                <div className="p-3 rounded-xl text-[10px] font-mono border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 animate-pulse">
-                  [ACCESS GRANTED] DECRYPTING SYSTEMS
-                </div>
-              )}
-
-              <button
-                type="submit"
-                disabled={unlockSuccess}
-                className="w-full bg-white text-black py-3 rounded-xl text-xs font-mono uppercase tracking-widest hover:bg-neutral-200 transition-colors disabled:opacity-50"
-              >
-                {unlockSuccess ? 'decrypting...' : 'authenticate'}
-              </button>
-            </form>
-          </div>
-        </div>
-      ) : (
-        <>
-          {/* Floating Navbar */}
-          <nav className="fixed z-50 px-5 md:px-10 pt-5 md:pt-6 top-0 left-0 right-0 flex items-center justify-between gap-4 backdrop-blur-[2px]">
+      {/* Floating Navbar */}
+      <nav className="fixed z-50 px-5 md:px-10 pt-5 md:pt-6 top-0 left-0 right-0 flex items-center justify-between gap-4 backdrop-blur-[2px]">
         {/* Left Pill (Brand) */}
         <div
           onClick={() => navigate('home')}
@@ -733,8 +656,6 @@ export default function App() {
       </footer>
 
       {/* Mobile bottom pill nav removed — hamburger menu used instead */}
-        </>
-      )}
     </div>
   );
 }
