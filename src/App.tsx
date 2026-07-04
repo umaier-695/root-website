@@ -192,6 +192,7 @@ export default function App() {
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [formStatus, setFormStatus] = useState<{ type: 'success' | 'error' | null; message: string }>({ type: null, message: '' });
 
   const navigate = (page: PageType) => {
     setCurrentPage(page);
@@ -202,6 +203,7 @@ export default function App() {
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormSubmitted(true);
+    setFormStatus({ type: null, message: '' });
 
     // Replace the string below with your free Web3Forms access key from web3forms.com
     const ACCESS_KEY = "d3ebcb2b-9ec1-4268-85a0-cfed62657c1c"; // Default temporary registration key, replace with yours if needed
@@ -224,16 +226,16 @@ export default function App() {
 
       const data = await response.json();
       if (data.success) {
-        alert("Payload transmission successful! Real email has been routed to my inbox.");
+        setFormStatus({ type: 'success', message: 'Payload transmission successful! Real email has been routed to my inbox.' });
         setAlias('');
         setEmail('');
         setSubject('');
         setMessage('');
       } else {
-        alert("Transmission failed: " + data.message);
+        setFormStatus({ type: 'error', message: data.message });
       }
     } catch (err) {
-      alert("Transmission failed. Please verify your internet connection.");
+      setFormStatus({ type: 'error', message: 'Transmission failed. Please verify your internet connection.' });
     } finally {
       setFormSubmitted(false);
     }
@@ -600,6 +602,16 @@ export default function App() {
                         required
                       />
                     </div>
+
+                    {formStatus.type && (
+                      <div className={`p-4 rounded-xl text-xs font-mono border ${
+                        formStatus.type === 'success' 
+                          ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400' 
+                          : 'border-rose-500/30 bg-rose-500/10 text-rose-400'
+                      }`}>
+                        [{formStatus.type.toUpperCase()}] {formStatus.message}
+                      </div>
+                    )}
 
                     <button
                       type="submit"
