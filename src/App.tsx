@@ -226,7 +226,7 @@ export default function App() {
 
       const data = await response.json();
       if (data.success) {
-        setFormStatus({ type: 'success', message: 'Payload transmission successful! Real email has been routed to my inbox.' });
+        setFormStatus({ type: 'success', message: 'Thank you! Your message has been sent successfully.' });
         setAlias('');
         setEmail('');
         setSubject('');
@@ -284,11 +284,11 @@ export default function App() {
         <div className="flex items-center gap-3">
           {/* Uplink button — visible on desktop only */}
           <a
-            href="#uplink"
+            href="#contact"
             onClick={() => setCurrentPage('home')}
             className="hidden md:inline-flex bg-white text-black text-sm font-normal rounded-full px-6 py-3 hover:bg-neutral-200 transition-colors shadow-lg shadow-black/40"
           >
-            uplink
+            contact
           </a>
 
           {/* Hamburger button — mobile only */}
@@ -371,17 +371,17 @@ export default function App() {
             ))}
           </div>
 
-          {/* Footer — uplink */}
+          {/* Footer — contact */}
           <div className="px-3 pb-3">
             <a
-              href="#uplink"
+              href="#contact"
               onClick={() => { setCurrentPage('home'); setMenuOpen(false); }}
               className="flex items-center justify-center gap-2 w-full py-3 bg-white text-black text-xs font-mono uppercase tracking-widest rounded-2xl hover:bg-neutral-200 transition-colors"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-3.5 h-3.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 1 1.242 7.244" />
               </svg>
-              initiate uplink
+              contact me
             </a>
           </div>
         </div>
@@ -501,29 +501,28 @@ export default function App() {
 
             </section>
 
-
             {/* Anchor for scroll */}
             <div id="bento-anchor" className="pt-12" />
 
             {/* BENTO GRID HOME NODE */}
             <HomeNode onNavigate={(page) => setCurrentPage(page as PageType)} />
             
-            {/* SECURE UPLINK CONTACT FORM */}
-            <section id="uplink" className="py-24 px-6 md:px-12 max-w-5xl mx-auto border-t border-white/5">
+            {/* CONTACT FORM */}
+            <section id="contact" className="py-24 px-6 md:px-12 max-w-5xl mx-auto border-t border-white/5">
               <div className="mb-12 text-center md:text-left">
-                <span className="text-xs font-mono tracking-widest text-neutral-500 uppercase block mb-2">// secure transmission route</span>
-                <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white font-readex">initiate secure connection</h2>
+                <span className="text-xs font-mono tracking-widest text-neutral-500 uppercase block mb-2">// GET IN TOUCH</span>
+                <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white font-readex">contact me</h2>
               </div>
-
+ 
               <div className="grid grid-cols-1 md:grid-cols-5 gap-12 items-start">
                 <div className="md:col-span-2 space-y-6">
                   <div>
-                    <h3 className="text-base font-medium text-white mb-2">physical location node</h3>
+                    <h3 className="text-base font-medium text-white mb-2">contact details</h3>
                     <p className="text-xs text-neutral-400 font-light leading-relaxed">
-                      route digital signals to my systems terminal. use the contact form to upload transmission data or select a direct coordinates channel below.
+                      Have a project in mind, want to collaborate, or just want to chat? Fill out the contact form or reach out directly via one of my official channels.
                     </p>
                   </div>
-
+ 
                   <div className="space-y-4 font-mono text-xs text-neutral-400">
                     <div className="flex items-center gap-3">
                       <span className="shrink-0 text-white">
@@ -556,53 +555,53 @@ export default function App() {
                   <form onSubmit={handleFormSubmit} className="space-y-5">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <label className="text-[10px] font-mono uppercase tracking-wider text-neutral-400">alias / identity</label>
+                        <label className="text-[10px] font-mono uppercase tracking-wider text-neutral-400">your name</label>
                         <input
                           type="text"
                           value={alias}
                           onChange={(e) => setAlias(e.target.value)}
-                          placeholder="e.g. secure_agent"
+                          placeholder="e.g. John Doe"
                           className="w-full bg-neutral-900/50 border border-white/5 rounded-xl px-4 py-3 text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-white transition-colors"
                           required
                         />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-[10px] font-mono uppercase tracking-wider text-neutral-400">route channel (email)</label>
+                        <label className="text-[10px] font-mono uppercase tracking-wider text-neutral-400">your email</label>
                         <input
                           type="email"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
-                          placeholder="e.g. agent@domain.com"
+                          placeholder="e.g. john@example.com"
                           className="w-full bg-neutral-900/50 border border-white/5 rounded-xl px-4 py-3 text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-white transition-colors"
                           required
                         />
                       </div>
                     </div>
-
+ 
                     <div className="space-y-2">
-                      <label className="text-[10px] font-mono uppercase tracking-wider text-neutral-400">transmission subject</label>
+                      <label className="text-[10px] font-mono uppercase tracking-wider text-neutral-400">subject</label>
                       <input
                         type="text"
                         value={subject}
                         onChange={(e) => setSubject(e.target.value)}
-                        placeholder="e.g. system audit payload"
+                        placeholder="e.g. Project Inquiry"
                         className="w-full bg-neutral-900/50 border border-white/5 rounded-xl px-4 py-3 text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-white transition-colors"
                         required
                       />
                     </div>
-
+ 
                     <div className="space-y-2">
-                      <label className="text-[10px] font-mono uppercase tracking-wider text-neutral-400">transmission message</label>
+                      <label className="text-[10px] font-mono uppercase tracking-wider text-neutral-400">your message</label>
                       <textarea
                         rows={4}
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
-                        placeholder="enter details here..."
+                        placeholder="Type your message here..."
                         className="w-full bg-neutral-900/50 border border-white/5 rounded-xl px-4 py-3 text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-white transition-colors resize-none"
                         required
                       />
                     </div>
-
+ 
                     {formStatus.type && (
                       <div className={`p-4 rounded-xl text-xs font-mono border ${
                         formStatus.type === 'success' 
@@ -612,13 +611,13 @@ export default function App() {
                         [{formStatus.type.toUpperCase()}] {formStatus.message}
                       </div>
                     )}
-
+ 
                     <button
                       type="submit"
                       disabled={formSubmitted}
                       className="w-full bg-white text-black py-3 rounded-xl text-xs font-mono uppercase tracking-widest hover:bg-neutral-200 transition-colors disabled:opacity-50"
                     >
-                      {formSubmitted ? 'transmitting payload...' : 'transmit secure message'}
+                      {formSubmitted ? 'sending message...' : 'send message'}
                     </button>
                   </form>
                 </div>
