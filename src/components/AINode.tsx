@@ -1,0 +1,171 @@
+import { useState, useRef } from 'react';
+
+interface SpatialGlassCardProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+function SpatialGlassCard({ children, className = '' }: SpatialGlassCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [coords, setCoords] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = e.clientX - rect.left - width / 2;
+    const mouseY = e.clientY - rect.top - height / 2;
+    const rotateX = -(mouseY / (height / 2)) * 8;
+    const rotateY = (mouseX / (width / 2)) * 8;
+    setCoords({ x: rotateX, y: rotateY });
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    setCoords({ x: 0, y: 0 });
+  };
+
+  return (
+    <div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        transform: `perspective(1000px) rotateX(${coords.x}deg) rotateY(${coords.y}deg)`,
+        transition: isHovered ? 'none' : 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+      }}
+      className={`bg-white/[0.02] border border-white/10 backdrop-blur-xl p-6 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-all hover:border-white/20 select-none ${className}`}
+    >
+      {children}
+    </div>
+  );
+}
+
+export default function AINode() {
+  return (
+    <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-10 sm:space-y-12 animate-fadeIn relative">
+      
+      {/* Background Liquid Glass flowing radial blobs */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-50">
+        <div className="absolute top-[10%] left-[15%] w-[400px] h-[400px] rounded-full bg-gradient-to-tr from-cyan-500/20 to-blue-500/10 blur-[120px] animate-[pulse_10s_infinite]" />
+        <div className="absolute bottom-[20%] right-[5%] w-[350px] h-[350px] rounded-full bg-gradient-to-br from-purple-500/15 to-indigo-500/10 blur-[100px] animate-[pulse_8s_infinite]" />
+      </div>
+
+      <div className="relative z-10 space-y-8">
+        
+        {/* Header */}
+        <div className="mb-2">
+          <span className="text-xs font-mono tracking-widest text-neutral-500 uppercase block mb-1">
+            // intelligence layer
+          </span>
+          <h2 className="text-3xl font-semibold tracking-tight text-white font-readex">
+            local ai integration specifications
+          </h2>
+        </div>
+
+        {/* Bento Grid Layout (No interactive chat simulation, showing real details) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-4 sm:gap-6 font-mono text-white">
+          
+          {/* Card 1: Active LLM Models (md:col-span-3) */}
+          <SpatialGlassCard className="sm:col-span-1 md:col-span-3 h-auto min-h-[280px] sm:min-h-[320px] flex flex-col justify-between">
+            <div className="space-y-4">
+              <span className="text-[9px] text-cyan-400 uppercase tracking-widest block">// active models</span>
+              <h3 className="text-lg font-bold font-readex uppercase text-white leading-none">local models configured</h3>
+              <p className="text-xs text-neutral-400 font-light leading-relaxed">
+                utilizing high-performance local inference engines optimized for code generation, security analysis, and private scripting.
+              </p>
+            </div>
+
+            <div className="space-y-2 bg-[#121214]/60 border border-white/5 p-4 rounded-2xl">
+              <div className="flex justify-between items-center text-[10px]">
+                <span className="font-bold text-white">DeepSeek Coder R1</span>
+                <span className="text-cyan-400 uppercase text-[9px] bg-cyan-950/30 px-2 py-0.5 rounded border border-cyan-500/20">8B (Quant q8_0)</span>
+              </div>
+              <div className="flex justify-between items-center text-[10px]">
+                <span className="font-bold text-white">Qwen 2.5 Coder</span>
+                <span className="text-cyan-400 uppercase text-[9px] bg-cyan-950/30 px-2 py-0.5 rounded border border-cyan-500/20">14B (Unquant fp16)</span>
+              </div>
+            </div>
+
+            <div className="text-[8px] text-neutral-500 border-t border-white/5 pt-2 uppercase">
+              orchestration runtime: Ollama local socket link
+            </div>
+          </SpatialGlassCard>
+
+          {/* Card 2: Developer Data Privacy (md:col-span-3) */}
+          <SpatialGlassCard className="sm:col-span-1 md:col-span-3 h-auto min-h-[280px] sm:min-h-[320px] flex flex-col justify-between">
+            <div className="space-y-4">
+              <span className="text-[9px] text-purple-400 uppercase tracking-widest block">// zero data egress</span>
+              <h3 className="text-lg font-bold font-readex uppercase text-white leading-none">developer autonomy</h3>
+              <p className="text-xs text-neutral-400 font-light leading-relaxed">
+                enforcing strict code confidentiality constraints. prompts and sensitive file structures are parsed entirely on localhost hardware.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 text-[10px] text-neutral-300">
+              <div className="bg-[#121214]/40 border border-white/5 p-2.5 rounded-xl">
+                <span className="text-purple-400 block font-bold">100% OFFLINE</span>
+                <span>No telemetry leaks</span>
+              </div>
+              <div className="bg-[#121214]/40 border border-white/5 p-2.5 rounded-xl">
+                <span className="text-purple-400 block font-bold">ZERO CLOUD</span>
+                <span>Workspace isolates</span>
+              </div>
+            </div>
+
+            <div className="text-[8px] text-neutral-500 border-t border-white/5 pt-2 uppercase">
+              compliance parameters: strict local data privacy
+            </div>
+          </SpatialGlassCard>
+
+          {/* Card 3: Model Context Protocol (md:col-span-4) */}
+          <SpatialGlassCard className="sm:col-span-2 md:col-span-4 h-auto min-h-[180px] sm:min-h-[220px] flex flex-col justify-between">
+            <div className="space-y-3">
+              <span className="text-[9px] text-cyan-400 uppercase tracking-widest block">// context layer</span>
+              <h3 className="text-lg font-bold font-readex uppercase text-white leading-none">model context protocol (mcp)</h3>
+              <p className="text-xs text-neutral-400 font-light leading-relaxed">
+                mapping local directory paths directly to local model contexts. translates relative file schemas, indexes workspaces, and allows safe localized API hooks without uploading directory trees to external servers.
+              </p>
+            </div>
+
+            <div className="text-[8px] text-neutral-500 border-t border-white/5 pt-3 uppercase">
+              mcp schema integration: healthy &bull; active link
+            </div>
+          </SpatialGlassCard>
+
+          {/* Card 4: Directory Map details (md:col-span-2) */}
+          <SpatialGlassCard className="sm:col-span-2 md:col-span-2 h-auto min-h-[180px] sm:min-h-[220px] flex flex-col justify-between">
+            <div className="space-y-3">
+              <span className="text-[9px] text-neutral-500 uppercase tracking-widest block">// active workspaces</span>
+              <h3 className="text-sm font-bold font-readex uppercase text-white leading-none">directory indexes</h3>
+            </div>
+
+            <div className="bg-[#121214]/60 border border-white/5 p-3.5 rounded-2xl space-y-1.5 text-[9px] text-neutral-400">
+              <div className="flex justify-between">
+                <span>Workspace root:</span>
+                <span className="text-white font-bold">/umaierjavid/Root/</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Configs path:</span>
+                <span className="text-white">/config/plugins/</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Uplink targets:</span>
+                <span className="text-white">localhost:11434</span>
+              </div>
+            </div>
+
+            <div className="text-[8px] text-neutral-600 uppercase leading-none">
+              monitoring workspace indexes
+            </div>
+          </SpatialGlassCard>
+
+        </div>
+
+      </div>
+    </div>
+  );
+}
