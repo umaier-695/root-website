@@ -197,8 +197,40 @@ export default function App() {
   const navigate = (page: PageType) => {
     setCurrentPage(page);
     setMenuOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const target = document.getElementById(page);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
+    }
   };
+
+  useEffect(() => {
+    const sections: PageType[] = ['home', 'security', 'ai', 'iot', 'cloud'];
+    const observers = sections.map((id) => {
+      const el = document.getElementById(id);
+      if (!el) return null;
+
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setCurrentPage(id);
+          }
+        },
+        {
+          threshold: 0.15,
+          rootMargin: '-20% 0px -40% 0px'
+        }
+      );
+
+      observer.observe(el);
+      return { observer, el };
+    });
+
+    return () => {
+      observers.forEach((obs) => {
+        if (obs) obs.observer.unobserve(obs.el);
+      });
+    };
+  }, []);
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -386,257 +418,314 @@ export default function App() {
           </div>
         </div>
       </div>
-
-      {/* Main Pages Content Router */}
-      <div className="relative z-10 pt-28 pb-12 w-full min-h-screen">
+      {/* Main Pages Content (Single Page Scrolling Portfolio) */}
+      <div className="relative z-10 pt-28 pb-12 w-full min-h-screen space-y-36">
         
         {/* VIEW 1: HOME PAGE (includes Hero Section & Bento Grid) */}
-        {currentPage === 'home' && (
-          <div className="space-y-12">
-            {/* HERO SECTION */}
-            <section className="relative w-full flex flex-col justify-center items-center overflow-hidden">
+        <div id="home" className="space-y-12 scroll-mt-28">
+          {/* HERO SECTION */}
+          <section className="relative w-full flex flex-col justify-center items-center overflow-hidden">
 
-              {/* ── MOBILE HERO (< md) ─────────────────────────────────── */}
-              <div className="md:hidden w-full px-5 pt-10 pb-24 flex flex-col gap-6 select-none">
-                {/* Stacked headline words */}
-                <div className="space-y-1">
-                  <h1 className="hero-title text-white font-medium text-[14vw] leading-none">engineer</h1>
-                  <h1 className="hero-title text-white font-medium text-[14vw] leading-none text-right">secure</h1>
-                  <h1 className="hero-title text-white font-medium text-[11.5vw] leading-none">orchestrate</h1>
+            {/* ── MOBILE HERO (< md) ─────────────────────────────────── */}
+            <div className="md:hidden w-full px-5 pt-10 pb-24 flex flex-col gap-6 select-none">
+              {/* Stacked headline words */}
+              <div className="space-y-1">
+                <h1 className="hero-title text-white font-medium text-[14vw] leading-none">engineer</h1>
+                <h1 className="hero-title text-white font-medium text-[14vw] leading-none text-right">secure</h1>
+                <h1 className="hero-title text-white font-medium text-[11.5vw] leading-none">orchestrate</h1>
+              </div>
+
+              {/* Description */}
+              <p className="text-[13px] leading-relaxed text-white/70 max-w-xs font-light">
+                systems &amp; cloud engineer specializing in enterprise cloud infrastructure, offensive security auditing, and localized AI orchestration.
+              </p>
+
+              {/* Stats row */}
+              <div className="flex items-center gap-6 border-t border-white/10 pt-5">
+                <div className="flex flex-col">
+                  <span className="text-3xl font-medium tracking-tight text-white font-readex">+6</span>
+                  <span className="text-[10px] text-white/50 font-mono">gcp badges</span>
                 </div>
-
-                {/* Description */}
-                <p className="text-[13px] leading-relaxed text-white/70 max-w-xs font-light">
-                  systems &amp; cloud engineer specializing in enterprise cloud infrastructure, offensive security auditing, and localized AI orchestration.
-                </p>
-
-                {/* Stats row */}
-                <div className="flex items-center gap-6 border-t border-white/10 pt-5">
-                  <div className="flex flex-col">
-                    <span className="text-3xl font-medium tracking-tight text-white font-readex">+6</span>
-                    <span className="text-[10px] text-white/50 font-mono">gcp badges</span>
-                  </div>
-                  <div className="w-px h-8 bg-white/10" />
-                  <div className="flex flex-col">
-                    <span className="text-3xl font-medium tracking-tight text-white font-readex">+12</span>
-                    <span className="text-[10px] text-white/50 font-mono">gke clusters</span>
-                  </div>
-                  <div className="w-px h-8 bg-white/10" />
-                  <div className="flex flex-col">
-                    <span className="text-3xl font-medium tracking-tight text-white font-readex">+85</span>
-                    <span className="text-[10px] text-white/50 font-mono">vulns patched</span>
-                  </div>
+                <div className="w-px h-8 bg-white/10" />
+                <div className="flex flex-col">
+                  <span className="text-3xl font-medium tracking-tight text-white font-readex">+12</span>
+                  <span className="text-[10px] text-white/50 font-mono">gke clusters</span>
                 </div>
-
-                {/* Scroll cue */}
-                <div
-                  className="flex flex-col items-start gap-1 cursor-pointer pointer-events-auto"
-                  onClick={() => document.getElementById('bento-anchor')?.scrollIntoView({ behavior: 'smooth' })}
-                >
-                  <span className="text-[10px] uppercase tracking-widest text-white/30">scroll to brief</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-4 h-4 text-white/30 animate-bounce">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                  </svg>
+                <div className="w-px h-8 bg-white/10" />
+                <div className="flex flex-col">
+                  <span className="text-3xl font-medium tracking-tight text-white font-readex">+85</span>
+                  <span className="text-[10px] text-white/50 font-mono">vulns patched</span>
                 </div>
               </div>
 
-              {/* ── DESKTOP HERO (md+) ─────────────────────────────────── */}
-              <div className="hidden md:block relative h-[90vh] w-full pointer-events-none max-w-5xl mx-auto">
-                {/* Three Giant Staggered Headline Words */}
-                <h1 className="hero-title absolute text-white font-medium text-[9vw] lg:text-[8vw] left-10 top-[14%] select-none">
-                  engineer
-                </h1>
-                
-                <h1 className="hero-title absolute text-white font-medium text-[9vw] lg:text-[8vw] right-10 top-[38%] select-none">
-                  secure
-                </h1>
-                
-                <h1 className="hero-title absolute text-white font-medium text-[7.5vw] lg:text-[6.5vw] left-[24%] top-[62%] select-none">
-                  orchestrate
-                </h1>
+              {/* Scroll cue */}
+              <div
+                className="flex flex-col items-start gap-1 cursor-pointer pointer-events-auto"
+                onClick={() => document.getElementById('bento-anchor')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                <span className="text-[10px] uppercase tracking-widest text-white/30">scroll to brief</span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-4 h-4 text-white/30 animate-bounce">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                </svg>
+              </div>
+            </div>
 
-                {/* Description Paragraph */}
-                <p className="absolute left-12 top-[48%] max-w-[280px] text-[14px] leading-snug text-white/80 select-none pointer-events-auto">
-                  systems &amp; cloud engineer specializing in enterprise cloud infrastructure, offensive security auditing, and localized AI orchestration.
-                </p>
+            {/* ── DESKTOP HERO (md+) ─────────────────────────────────── */}
+            <div className="hidden md:block relative h-[90vh] w-full pointer-events-none max-w-5xl mx-auto">
+              {/* Three Giant Staggered Headline Words */}
+              <h1 className="hero-title absolute text-white font-medium text-[9vw] lg:text-[8vw] left-10 top-[14%] select-none">
+                engineer
+              </h1>
+              
+              <h1 className="hero-title absolute text-white font-medium text-[9vw] lg:text-[8vw] right-10 top-[38%] select-none">
+                secure
+              </h1>
+              
+              <h1 className="hero-title absolute text-white font-medium text-[7.5vw] lg:text-[6.5vw] left-[24%] top-[62%] select-none">
+                orchestrate
+              </h1>
 
-                {/* Stat Block - Top-Right */}
-                <div className="absolute right-16 top-[12%] flex flex-col items-end select-none">
-                  <div className="flex items-center gap-3 justify-end">
-                    <div className="h-px w-24 bg-white/40 rotate-[20deg]" />
-                    <span className="text-5xl font-medium tracking-tight text-white font-readex">+6</span>
-                  </div>
-                  <span className="text-sm text-white/70 mt-1 text-right font-mono">gcp badges verified</span>
+              {/* Description Paragraph */}
+              <p className="absolute left-12 top-[48%] max-w-[280px] text-[14px] leading-snug text-white/80 select-none pointer-events-auto">
+                systems &amp; cloud engineer specializing in enterprise cloud infrastructure, offensive security auditing, and localized AI orchestration.
+              </p>
+
+              {/* Stat Block - Top-Right */}
+              <div className="absolute right-16 top-[12%] flex flex-col items-end select-none">
+                <div className="flex items-center gap-3 justify-end">
+                  <div className="h-px w-24 bg-white/40 rotate-[20deg]" />
+                  <span className="text-5xl font-medium tracking-tight text-white font-readex">+6</span>
                 </div>
-
-                {/* Stat Block - Bottom-Left */}
-                <div className="absolute left-16 bottom-12 flex flex-col items-start select-none">
-                  <div className="flex items-center gap-3">
-                    <span className="text-5xl font-medium tracking-tight text-white font-readex">+12</span>
-                    <div className="h-px w-24 bg-white/40 -rotate-[20deg]" />
-                  </div>
-                  <span className="text-sm text-white/70 mt-1 font-mono">gke clusters &amp; services</span>
-                </div>
-
-                {/* Stat Block - Bottom-Right */}
-                <div className="absolute right-16 bottom-12 flex flex-col items-end select-none">
-                  <div className="flex items-center gap-3 justify-end">
-                    <div className="h-px w-24 bg-white/40 -rotate-[20deg]" />
-                    <span className="text-5xl font-medium tracking-tight text-white font-readex">+85</span>
-                  </div>
-                  <span className="text-sm text-white/70 mt-1 text-right font-mono">owasp vulns patched</span>
-                </div>
-
-                {/* Scroll down indicator */}
-                <div
-                  className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-1 cursor-pointer pointer-events-auto z-20"
-                  onClick={() => document.getElementById('bento-anchor')?.scrollIntoView({ behavior: 'smooth' })}
-                >
-                  <span className="text-[10px] uppercase tracking-widest text-white/40">scroll to brief</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-4 h-4 text-white/40 animate-bounce">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                  </svg>
-                </div>
+                <span className="text-sm text-white/70 mt-1 text-right font-mono">gcp badges verified</span>
               </div>
 
-            </section>
-
-            {/* Anchor for scroll */}
-            <div id="bento-anchor" className="pt-12" />
-
-            {/* BENTO GRID HOME NODE */}
-            <HomeNode onNavigate={(page) => setCurrentPage(page as PageType)} />
-            
-            {/* CONTACT FORM */}
-            <section id="contact" className="py-24 px-6 md:px-12 max-w-5xl mx-auto border-t border-white/5">
-              <div className="mb-12 text-center md:text-left">
-                <span className="text-xs font-mono tracking-widest text-neutral-500 uppercase block mb-2">// GET IN TOUCH</span>
-                <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white font-readex">contact me</h2>
-              </div>
- 
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-12 items-start">
-                <div className="md:col-span-2 space-y-6">
-                  <div>
-                    <h3 className="text-base font-medium text-white mb-2">contact details</h3>
-                    <p className="text-xs text-neutral-400 font-light leading-relaxed">
-                      Have a project in mind, want to collaborate, or just want to chat? Fill out the contact form or reach out directly via one of my official channels.
-                    </p>
-                  </div>
- 
-                  <div className="space-y-4 font-mono text-xs text-neutral-400">
-                    <div className="flex items-center gap-3">
-                      <span className="shrink-0 text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                      </span>
-                      <span>email: <a href="https://mail.google.com/mail/?view=cm&fs=1&to=umaierjavid391@gmail.com" target="_blank" rel="noopener noreferrer" className="text-white hover:underline break-all">umaierjavid391@gmail.com</a></span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="shrink-0 text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
-                      </span>
-                      <span>insta: <a href="https://instagram.com/umaier_javid_313" target="_blank" rel="noopener noreferrer" className="text-white hover:underline">@umaier_javid_313</a></span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="shrink-0 text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-                      </span>
-                      <span>github: <a href="https://github.com/umaier-695" target="_blank" rel="noopener noreferrer" className="text-white hover:underline">github.com/umaier-695</a></span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="shrink-0 text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
-                      </span>
-                      <span>credly: <a href="https://www.credly.com/users/umaier-javid" target="_blank" rel="noopener noreferrer" className="text-white hover:underline">credly.com/users/umaier-javid</a></span>
-                    </div>
-                  </div>
+              {/* Stat Block - Bottom-Left */}
+              <div className="absolute left-16 bottom-12 flex flex-col items-start select-none">
+                <div className="flex items-center gap-3">
+                  <span className="text-5xl font-medium tracking-tight text-white font-readex">+12</span>
+                  <div className="h-px w-24 bg-white/40 -rotate-[20deg]" />
                 </div>
-
-                <div className="md:col-span-3 bg-neutral-950/70 border border-white/5 p-6 rounded-2xl shadow-xl shadow-black">
-                  <form onSubmit={handleFormSubmit} className="space-y-5">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-mono uppercase tracking-wider text-neutral-400">your name</label>
-                        <input
-                          type="text"
-                          value={alias}
-                          onChange={(e) => setAlias(e.target.value)}
-                          placeholder="e.g. John Doe"
-                          className="w-full bg-neutral-900/50 border border-white/5 rounded-xl px-4 py-3 text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-white transition-colors"
-                          required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-mono uppercase tracking-wider text-neutral-400">your email</label>
-                        <input
-                          type="email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          placeholder="e.g. john@example.com"
-                          className="w-full bg-neutral-900/50 border border-white/5 rounded-xl px-4 py-3 text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-white transition-colors"
-                          required
-                        />
-                      </div>
-                    </div>
- 
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-mono uppercase tracking-wider text-neutral-400">subject</label>
-                      <input
-                        type="text"
-                        value={subject}
-                        onChange={(e) => setSubject(e.target.value)}
-                        placeholder="e.g. Project Inquiry"
-                        className="w-full bg-neutral-900/50 border border-white/5 rounded-xl px-4 py-3 text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-white transition-colors"
-                        required
-                      />
-                    </div>
- 
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-mono uppercase tracking-wider text-neutral-400">your message</label>
-                      <textarea
-                        rows={4}
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        placeholder="Type your message here..."
-                        className="w-full bg-neutral-900/50 border border-white/5 rounded-xl px-4 py-3 text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-white transition-colors resize-none"
-                        required
-                      />
-                    </div>
- 
-                    {formStatus.type && (
-                      <div className={`p-4 rounded-xl text-xs font-mono border ${
-                        formStatus.type === 'success' 
-                          ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400' 
-                          : 'border-rose-500/30 bg-rose-500/10 text-rose-400'
-                      }`}>
-                        [{formStatus.type.toUpperCase()}] {formStatus.message}
-                      </div>
-                    )}
- 
-                    <button
-                      type="submit"
-                      disabled={formSubmitted}
-                      className="w-full bg-white text-black py-3 rounded-xl text-xs font-mono uppercase tracking-widest hover:bg-neutral-200 transition-colors disabled:opacity-50"
-                    >
-                      {formSubmitted ? 'sending message...' : 'send message'}
-                    </button>
-                  </form>
-                </div>
+                <span className="text-sm text-white/70 mt-1 font-mono">gke clusters &amp; services</span>
               </div>
-            </section>
+
+              {/* Stat Block - Bottom-Right */}
+              <div className="absolute right-16 bottom-12 flex flex-col items-end select-none">
+                <div className="flex items-center gap-3 justify-end">
+                  <div className="h-px w-24 bg-white/40 -rotate-[20deg]" />
+                  <span className="text-5xl font-medium tracking-tight text-white font-readex">+85</span>
+                </div>
+                <span className="text-sm text-white/70 mt-1 text-right font-mono">owasp vulns patched</span>
+              </div>
+
+              {/* Scroll down indicator */}
+              <div
+                className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-1 cursor-pointer pointer-events-auto z-20"
+                onClick={() => document.getElementById('bento-anchor')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                <span className="text-[10px] uppercase tracking-widest text-white/40">scroll to brief</span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-4 h-4 text-white/40 animate-bounce">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                </svg>
+              </div>
+            </div>
+
+          </section>
+
+          {/* Anchor for scroll */}
+          <div id="bento-anchor" className="pt-12" />
+
+          {/* BENTO GRID HOME NODE */}
+          <HomeNode onNavigate={(page) => navigate(page as PageType)} />
+        </div>
+
+        {/* VIEW 2: SECURITY COMMAND NODE */}
+        <section id="security" className="scroll-mt-28 py-16 border-t border-white/5">
+          <div className="max-w-5xl mx-auto px-6 md:px-12 mb-12">
+            <span className="text-xs font-mono tracking-widest text-neutral-500 uppercase block mb-2">// SECURITY telemetry MONITOR</span>
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white font-readex">security telemetry</h2>
           </div>
-        )}
+          <SecurityNode />
+        </section>
 
-        {/* VIEW 2: SECURITY COMMAND NODE (Brutalism & Spatial UI) */}
-        {currentPage === 'security' && <SecurityNode />}
+        {/* VIEW 3: AI PIPELINE NODE */}
+        <section id="ai" className="scroll-mt-28 py-16 border-t border-white/5">
+          <div className="max-w-5xl mx-auto px-6 md:px-12 mb-12">
+            <span className="text-xs font-mono tracking-widest text-neutral-500 uppercase block mb-2">// LOCAL AI PIPELINE ORCHESTRATION</span>
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white font-readex">local ai node</h2>
+          </div>
+          <AINode />
+        </section>
 
-        {/* VIEW 3: AI PIPELINE NODE (Liquid Glass & Claymorphism) */}
-        {currentPage === 'ai' && <AINode />}
+        {/* VIEW 4: EMBEDDED CONSOLE NODE */}
+        <section id="iot" className="scroll-mt-28 py-16 border-t border-white/5">
+          <div className="max-w-5xl mx-auto px-6 md:px-12 mb-12">
+            <span className="text-xs font-mono tracking-widest text-neutral-500 uppercase block mb-2">// EMBEDDED SYSTEMS & TELEMETRY MONITOR</span>
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white font-readex">embedded device node</h2>
+          </div>
+          <IoTNode />
+        </section>
 
-        {/* VIEW 4: EMBEDDED CONSOLE NODE (Skeuomorphism & Neomorphism) */}
-        {currentPage === 'iot' && <IoTNode />}
+        {/* VIEW 5: CLOUD DEVSECOPS DASHBOARD */}
+        <section id="cloud" className="scroll-mt-28 py-16 border-t border-white/5">
+          <div className="max-w-5xl mx-auto px-6 md:px-12 mb-12">
+            <span className="text-xs font-mono tracking-widest text-neutral-500 uppercase block mb-2">// GOOGLE CLOUD DEVSECOPS DASHBOARD</span>
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white font-readex">cloud devsecops</h2>
+          </div>
+          <CloudNode />
+        </section>
 
-        {/* VIEW 5: CLOUD DEVSECOPS DASHBOARD (Maximalism) */}
-        {currentPage === 'cloud' && <CloudNode />}
+        {/* CONTACT FORM */}
+        <section id="contact" className="scroll-mt-28 py-16 border-t border-white/5 px-6 md:px-12 max-w-5xl mx-auto">
+          <div className="mb-12 text-center md:text-left">
+            <span className="text-xs font-mono tracking-widest text-neutral-500 uppercase block mb-2">// GET IN TOUCH</span>
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white font-readex">contact me</h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-12 items-start">
+            <div className="md:col-span-2 space-y-6">
+              <div>
+                <h3 className="text-base font-medium text-white mb-2">contact details</h3>
+                <p className="text-xs text-neutral-400 font-light leading-relaxed">
+                  Have a project in mind, want to collaborate, or just want to chat? Fill out the contact form or reach out directly via one of my official channels.
+                </p>
+              </div>
+
+              <div className="space-y-4 font-mono text-xs text-neutral-400">
+                <div className="flex items-center gap-3">
+                  <span className="shrink-0 text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                  </span>
+                  <span>email: <a href="https://mail.google.com/mail/?view=cm&fs=1&to=umaierjavid391@gmail.com" target="_blank" rel="noopener noreferrer" className="text-white hover:underline break-all">umaierjavid391@gmail.com</a></span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="shrink-0 text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                  </span>
+                  <span>insta: <a href="https://instagram.com/umaier_javid_313" target="_blank" rel="noopener noreferrer" className="text-white hover:underline">@umaier_javid_313</a></span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="shrink-0 text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                  </span>
+                  <span>github: <a href="https://github.com/umaier-695" target="_blank" rel="noopener noreferrer" className="text-white hover:underline">github.com/umaier-695</a></span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="shrink-0 text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+                  </span>
+                  <span>credly: <a href="https://www.credly.com/users/umaier-javid" target="_blank" rel="noopener noreferrer" className="text-white hover:underline">credly.com/users/umaier-javid</a></span>
+                </div>
+              </div>
+            </div>
+
+            <div className="md:col-span-3 bg-neutral-950/70 border border-white/5 p-6 rounded-2xl shadow-xl shadow-black">
+              <form onSubmit={handleFormSubmit} className="space-y-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-mono uppercase tracking-wider text-neutral-400">your name</label>
+                    <input
+                      type="text"
+                      value={alias}
+                      onChange={(e) => setAlias(e.target.value)}
+                      placeholder="e.g. John Doe"
+                      className="w-full bg-neutral-900/50 border border-white/5 rounded-xl px-4 py-3 text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-white transition-colors"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-mono uppercase tracking-wider text-neutral-400">your email</label>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="e.g. john@example.com"
+                      className="w-full bg-neutral-900/50 border border-white/5 rounded-xl px-4 py-3 text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-white transition-colors"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-mono uppercase tracking-wider text-neutral-400">subject</label>
+                  <input
+                    type="text"
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
+                    placeholder="e.g. Project Inquiry"
+                    className="w-full bg-neutral-900/50 border border-white/5 rounded-xl px-4 py-3 text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-white transition-colors"
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-mono uppercase tracking-wider text-neutral-400">your message</label>
+                  <textarea
+                    rows={4}
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Type your message here..."
+                    className="w-full bg-neutral-900/50 border border-white/5 rounded-xl px-4 py-3 text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-white transition-colors resize-none"
+                    required
+                  />
+                </div>
+
+                {formStatus.type && (
+                  <div className={`p-4 rounded-xl text-xs font-mono border ${
+                    formStatus.type === 'success' 
+                      ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400' 
+                      : 'border-rose-500/30 bg-rose-500/10 text-rose-400'
+                  }`}>
+                    [{formStatus.type.toUpperCase()}] {formStatus.message}
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={formSubmitted}
+                  className="w-full bg-white text-black py-3 rounded-xl text-xs font-mono uppercase tracking-widest hover:bg-neutral-200 transition-colors disabled:opacity-50"
+                >
+                  {formSubmitted ? 'sending message...' : 'send message'}
+                </button>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        {/* VIEW 2: SECURITY COMMAND NODE */}
+        <section id="security" className="scroll-mt-28 py-16 border-t border-white/5">
+          <div className="max-w-5xl mx-auto px-6 md:px-12 mb-12">
+            <span className="text-xs font-mono tracking-widest text-neutral-500 uppercase block mb-2">// SECURITY telemetry MONITOR</span>
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white font-readex">security telemetry</h2>
+          </div>
+          <SecurityNode />
+        </section>
+
+        {/* VIEW 3: AI PIPELINE NODE */}
+        <section id="ai" className="scroll-mt-28 py-16 border-t border-white/5">
+          <div className="max-w-5xl mx-auto px-6 md:px-12 mb-12">
+            <span className="text-xs font-mono tracking-widest text-neutral-500 uppercase block mb-2">// LOCAL AI PIPELINE ORCHESTRATION</span>
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white font-readex">local ai node</h2>
+          </div>
+          <AINode />
+        </section>
+
+        {/* VIEW 4: EMBEDDED CONSOLE NODE */}
+        <section id="iot" className="scroll-mt-28 py-16 border-t border-white/5">
+          <div className="max-w-5xl mx-auto px-6 md:px-12 mb-12">
+            <span className="text-xs font-mono tracking-widest text-neutral-500 uppercase block mb-2">// EMBEDDED SYSTEMS & TELEMETRY MONITOR</span>
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white font-readex">embedded device node</h2>
+          </div>
+          <IoTNode />
+        </section>
+
+        {/* VIEW 5: CLOUD DEVSECOPS DASHBOARD */}
+        <section id="cloud" className="scroll-mt-28 py-16 border-t border-white/5">
+          <div className="max-w-5xl mx-auto px-6 md:px-12 mb-12">
+            <span className="text-xs font-mono tracking-widest text-neutral-500 uppercase block mb-2">// GOOGLE CLOUD DEVSECOPS DASHBOARD</span>
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white font-readex">cloud devsecops</h2>
+          </div>
+          <CloudNode />
+        </section>
 
       </div>
 
