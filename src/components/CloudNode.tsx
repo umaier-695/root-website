@@ -149,7 +149,7 @@ export default function CloudNode() {
             </div>
 
             <div className="text-[9px] font-bold text-black border-t border-black/10 pt-2 uppercase flex justify-between">
-              <span>id: umaierjavid391@gmail.com</span>
+              <span>id: <a href="https://mail.google.com/mail/?view=cm&fs=1&to=umaierjavid391@gmail.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-neutral-700 transition-colors">umaierjavid391@gmail.com</a></span>
               <span>accreditation client: credly verified</span>
             </div>
           </BrutalistCard>
