@@ -69,3 +69,13 @@ input[type="range"]::-moz-range-thumb:hover {
   transform: scale(1.2);
   background-color: #18f700;
 }
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+.console-cursor::after {
+  content: ' _';
+  animation: blink 1s step-start infinite;
+  color: #a3a3a3;
+}

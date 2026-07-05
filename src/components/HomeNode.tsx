@@ -1,5 +1,51 @@
+import { useState, useRef } from 'react';
+import type { MouseEvent } from 'react';
+
 interface HomeNodeProps {
   onNavigate: (page: string) => void;
+}
+
+function GlowCard({ children, className = '', onClick }: { children: React.ReactNode; className?: string; onClick?: () => void }) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [coords, setCoords] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    setCoords({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  };
+
+  return (
+    <div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onClick={onClick}
+      className={`relative overflow-hidden group rounded-3xl ${className}`}
+    >
+      {/* Glow Effect Overlay */}
+      <div
+        className="pointer-events-none absolute -inset-px rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0"
+        style={{
+          background: `radial-gradient(300px circle at ${coords.x}px ${coords.y}px, rgba(24, 247, 0, 0.095), transparent 80%)`,
+        }}
+      />
+      {/* Outer Border Glow */}
+      <div
+        className="pointer-events-none absolute -inset-px rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 border border-emerald-400/45"
+        style={{
+          maskImage: `radial-gradient(150px circle at ${coords.x}px ${coords.y}px, black, transparent)`,
+          WebkitMaskImage: `radial-gradient(150px circle at ${coords.x}px ${coords.y}px, black, transparent)`,
+        }}
+      />
+      {/* Card Content Wrapper */}
+      <div className="relative z-10 h-full flex flex-col justify-between">
+        {children}
+      </div>
+    </div>
+  );
 }
 
 export default function HomeNode({ onNavigate }: HomeNodeProps) {
@@ -42,7 +88,7 @@ export default function HomeNode({ onNavigate }: HomeNodeProps) {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
         
         {/* Core Profile Card (Large Glassmorphism) */}
-        <div className="sm:col-span-2 md:col-span-2 bg-neutral-900/40 border border-white/5 backdrop-blur-md p-6 sm:p-8 rounded-3xl shadow-xl flex flex-col justify-between hover:border-white/10 transition-colors">
+        <GlowCard className="sm:col-span-2 md:col-span-2 bg-neutral-900/40 border border-white/5 backdrop-blur-md p-6 sm:p-8 rounded-3xl shadow-xl">
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-white animate-pulse" />
@@ -67,10 +113,10 @@ export default function HomeNode({ onNavigate }: HomeNodeProps) {
               Full-Stack Developer
             </span>
           </div>
-        </div>
+        </GlowCard>
 
         {/* Company Node Card (Frosted Glassmorphism) */}
-        <div className="bg-neutral-900/40 border border-white/5 backdrop-blur-md p-8 rounded-3xl shadow-xl flex flex-col justify-between hover:border-white/10 transition-colors">
+        <GlowCard className="bg-neutral-900/40 border border-white/5 backdrop-blur-md p-8 rounded-3xl shadow-xl">
           <div className="space-y-4">
             <span className="text-xs font-mono text-neutral-500 uppercase tracking-widest block">// affiliation</span>
             <h3 className="text-xl font-medium font-readex text-white">ROOT Systems</h3>
@@ -83,14 +129,16 @@ export default function HomeNode({ onNavigate }: HomeNodeProps) {
             <span className="text-xs font-mono text-neutral-500">status</span>
             <span className="text-xs font-mono text-white bg-neutral-800/80 px-3 py-1 rounded-full border border-white/5 font-bold">operational</span>
           </div>
-        </div>
+        </GlowCard>
 
         {/* Cloud & DevSecOps Bento Link */}
-        <div className="bg-neutral-900/40 border border-white/5 backdrop-blur-md p-8 rounded-3xl shadow-xl flex flex-col justify-between hover:border-white/10 transition-colors cursor-pointer group"
-             onClick={() => onNavigate('cloud')}>
+        <GlowCard
+          onClick={() => onNavigate('cloud')}
+          className="bg-neutral-900/40 border border-white/5 backdrop-blur-md p-8 rounded-3xl shadow-xl cursor-pointer"
+        >
           <div className="space-y-4">
             <span className="text-xs font-mono text-neutral-500 uppercase tracking-widest block">// gcp cloud architecture</span>
-            <h3 className="text-xl font-medium font-readex text-white">cloud & devsecops</h3>
+            <h3 className="text-xl font-medium font-readex text-white">cloud infrastructure</h3>
             <p className="text-xs text-neutral-400 leading-relaxed font-light">
               engineering secure GKE environments, provisioning VPC networks, hardening firewalls, and managing cloud compute models.
             </p>
@@ -100,11 +148,13 @@ export default function HomeNode({ onNavigate }: HomeNodeProps) {
             <span>access monitor</span>
             <span className="transform group-hover:translate-x-1 transition-transform">&rarr;</span>
           </div>
-        </div>
+        </GlowCard>
 
         {/* Tactical Competencies Bento Link */}
-        <div className="bg-neutral-900/40 border border-white/5 backdrop-blur-md p-8 rounded-3xl shadow-xl flex flex-col justify-between hover:border-white/10 transition-colors cursor-pointer group"
-             onClick={() => onNavigate('security')}>
+        <GlowCard
+          onClick={() => onNavigate('security')}
+          className="bg-neutral-900/40 border border-white/5 backdrop-blur-md p-8 rounded-3xl shadow-xl cursor-pointer"
+        >
           <div className="space-y-4">
             <span className="text-xs font-mono text-neutral-500 uppercase tracking-widest block">// offensive security</span>
             <h3 className="text-xl font-medium font-readex text-white group-hover:text-white transition-colors">cybersecurity</h3>
@@ -117,14 +167,16 @@ export default function HomeNode({ onNavigate }: HomeNodeProps) {
             <span>access shell</span>
             <span className="transform group-hover:translate-x-1 transition-transform">&rarr;</span>
           </div>
-        </div>
+        </GlowCard>
 
         {/* AI Control Room Bento Link */}
-        <div className="bg-neutral-900/40 border border-white/5 backdrop-blur-md p-8 rounded-3xl shadow-xl flex flex-col justify-between hover:border-white/10 transition-colors cursor-pointer group"
-             onClick={() => onNavigate('ai')}>
+        <GlowCard
+          onClick={() => onNavigate('ai')}
+          className="bg-neutral-900/40 border border-white/5 backdrop-blur-md p-8 rounded-3xl shadow-xl cursor-pointer"
+        >
           <div className="space-y-4">
             <span className="text-xs font-mono text-neutral-500 uppercase tracking-widest block">// localized intelligence</span>
-            <h3 className="text-xl font-medium font-readex text-white group-hover:text-white transition-colors">localized ai</h3>
+            <h3 className="text-xl font-medium font-readex text-white group-hover:text-white transition-colors">applied intelligence</h3>
             <p className="text-xs text-neutral-400 leading-relaxed font-light">
               optimizing quantized deep-learning models (DeepSeek, Qwen) on resource-constrained hardware using Ollama, LM Studio, and MCP.
             </p>
@@ -134,10 +186,10 @@ export default function HomeNode({ onNavigate }: HomeNodeProps) {
             <span>access pipeline</span>
             <span className="transform group-hover:translate-x-1 transition-transform">&rarr;</span>
           </div>
-        </div>
+        </GlowCard>
 
         {/* Verified Credentials Matrix - Full-Width Bento Card */}
-        <div className="bg-neutral-900/40 border border-white/5 backdrop-blur-md p-6 sm:p-8 rounded-3xl shadow-xl sm:col-span-2 md:col-span-3 hover:border-white/10 transition-colors">
+        <GlowCard className="bg-neutral-900/40 border border-white/5 backdrop-blur-md p-6 sm:p-8 rounded-3xl shadow-xl sm:col-span-2 md:col-span-3">
           <div className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/5 pb-4">
               <div>
@@ -179,7 +231,7 @@ export default function HomeNode({ onNavigate }: HomeNodeProps) {
               ))}
             </div>
           </div>
-        </div>
+        </GlowCard>
 
       </div>
     </div>
