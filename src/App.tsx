@@ -21,9 +21,10 @@ function MeshBackground({ currentPage }: { currentPage: PageType }) {
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
-    const cols = 22;
-    const rows = 22;
-    const spacing = 45;
+    const isMobile = width < 768;
+    const cols = isMobile ? 12 : 22;
+    const rows = isMobile ? 12 : 22;
+    const spacing = isMobile ? 32 : 45;
 
     let rotX = 1.0; // Initial tilt angle (looking down at terrain)
     let rotY = 0.0; // Initial rotation angle
@@ -233,6 +234,7 @@ function MeshBackground({ currentPage }: { currentPage: PageType }) {
 }
 
 function InteractiveWord({ word, className = '', active = false }: { word: string; className?: string; active?: boolean }) {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
   return (
     <span className={`inline-block select-none ${className}`}>
       {word.split('').map((char, index) => (
@@ -244,7 +246,7 @@ function InteractiveWord({ word, className = '', active = false }: { word: strin
               : 'text-inherit hover:text-white hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.65)]'
           }`}
           style={{ originX: 0.5, originY: 0.5 }}
-          whileHover={{ 
+          whileHover={isMobile ? undefined : { 
             scale: 1.35, 
             y: -10,
             transition: { type: 'spring', stiffness: 400, damping: 12 } 
@@ -258,6 +260,7 @@ function InteractiveWord({ word, className = '', active = false }: { word: strin
 }
 
 function InteractiveParagraph({ text, className = '' }: { text: string; className?: string }) {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
   return (
     <span className={`inline ${className}`}>
       {text.split(' ').map((word, wordIndex) => (
@@ -267,7 +270,7 @@ function InteractiveParagraph({ text, className = '' }: { text: string; classNam
               key={charIndex}
               className="inline-block cursor-default text-inherit hover:text-white hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.65)] transition-all duration-150"
               style={{ originX: 0.5, originY: 0.5 }}
-              whileHover={{ 
+              whileHover={isMobile ? undefined : { 
                 scale: 1.25, 
                 y: -4,
                 transition: { type: 'spring', stiffness: 400, damping: 14 } 
