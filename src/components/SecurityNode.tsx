@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 // Interactive Spatial Card Component
 interface SpatialCardProps {
@@ -88,6 +88,13 @@ export default function SecurityNode() {
     'SEC_PT: low-noise reconnaissance pipeline operational.'
   ]);
   const [cmdInput, setCmdInput] = useState('');
+  const logEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (logEndRef.current) {
+      logEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [logs]);
 
   const handleCommand = (e: React.FormEvent) => {
     e.preventDefault();
@@ -176,10 +183,11 @@ export default function SecurityNode() {
 
         <div className="h-44 overflow-y-auto font-mono text-xs text-neutral-400 space-y-2 select-text leading-tight">
           {logs.map((log, idx) => (
-            <div key={idx} className="leading-relaxed">
+            <div key={idx} className="leading-relaxed break-all">
               {log}
             </div>
           ))}
+          <div ref={logEndRef} />
         </div>
 
         <form onSubmit={handleCommand} className="flex gap-2 pt-3 border-t border-neutral-900">

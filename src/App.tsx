@@ -50,15 +50,15 @@ function MeshBackground({ currentPage }: { currentPage: PageType }) {
       clientY = -9999;
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseleave', handleMouseLeave);
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    window.addEventListener('mouseleave', handleMouseLeave, { passive: true });
 
     const handleResize = () => {
       if (!canvas) return;
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
     };
-    window.addEventListener('resize', handleResize);
+    window.addEventListener('resize', handleResize, { passive: true });
 
     const draw = () => {
       ctx.clearRect(0, 0, width, height);
@@ -233,51 +233,94 @@ function MeshBackground({ currentPage }: { currentPage: PageType }) {
   );
 }
 
-function InteractiveWord({ word, className = '', active = false }: { word: string; className?: string; active?: boolean }) {
+function InteractiveLetter({ char, active, isParagraph = false }: { char: string; active: boolean; isParagraph?: boolean }) {
+  const [isHovered, setIsHovered] = useState(false);
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+
+  return (
+    <motion.span
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onTouchStart={() => setIsHovered(true)}
+      onTouchEnd={() => {
+        setTimeout(() => setIsHovered(false), 250);
+      }}
+      className="relative inline-block cursor-default select-none"
+      style={{ originX: 0.5, originY: 0.5 }}
+    >
+      {/* Ghost Depth Echo */}
+      <motion.span
+        className="absolute inset-0 text-white/20 pointer-events-none"
+        animate={isHovered && char !== ' ' && char !== '\u00A0' ? {
+          x: isParagraph ? (isMobile ? 1 : 2) : (isMobile ? 2 : 4),
+          y: isParagraph ? (isMobile ? -0.8 : -1.5) : (isMobile ? -1.5 : -3.5),
+          scaleY: isParagraph ? (isMobile ? 1.05 : 1.12) : (isMobile ? 1.1 : 1.2),
+          scaleX: isParagraph ? (isMobile ? 1.02 : 1.05) : (isMobile ? 1.05 : 1.1),
+          opacity: 0.35,
+          filter: isMobile ? 'none' : 'blur(1.5px)'
+        } : {
+          x: 0,
+          y: 0,
+          scaleY: 1,
+          scaleX: 1,
+          opacity: 0,
+          filter: 'blur(0px)'
+        }}
+        transition={{ type: 'spring', stiffness: 400, damping: 14 }}
+      >
+        {char}
+      </motion.span>
+
+      {/* Main Letter */}
+      <motion.span
+        className={`inline-block transition-colors duration-150 ${
+          active 
+            ? 'text-black hover:drop-shadow-[0_0_8px_rgba(0,0,0,0.3)]' 
+            : 'text-inherit hover:text-white hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.75)]'
+        }`}
+        animate={isHovered ? {
+          scaleY: isParagraph ? (isMobile ? 1.08 : 1.15) : (isMobile ? 1.15 : 1.28), 
+          scaleX: isParagraph ? (isMobile ? 1.04 : 1.08) : (isMobile ? 1.08 : 1.15),
+          y: isParagraph ? (isMobile ? -2 : -4) : (isMobile ? -3 : -8),
+        } : {
+          scaleY: 1,
+          scaleX: 1,
+          y: 0
+        }}
+        transition={{ type: 'spring', stiffness: 400, damping: 14 }}
+      >
+        {char === ' ' ? '\u00A0' : char}
+      </motion.span>
+    </motion.span>
+  );
+}
+
+function InteractiveWord({ word, className = '', active = false }: { word: string; className?: string; active?: boolean }) {
   return (
     <span className={`inline-block select-none ${className}`}>
       {word.split('').map((char, index) => (
-        <motion.span
-          key={index}
-          className={`inline-block cursor-default transition-all duration-150 ${
-            active 
-              ? 'text-black hover:drop-shadow-[0_0_8px_rgba(0,0,0,0.3)]' 
-              : 'text-inherit hover:text-white hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.65)]'
-          }`}
-          style={{ originX: 0.5, originY: 0.5 }}
-          whileHover={isMobile ? undefined : { 
-            scale: 1.35, 
-            y: -10,
-            transition: { type: 'spring', stiffness: 400, damping: 12 } 
-          }}
-        >
-          {char === ' ' ? '\u00A0' : char}
-        </motion.span>
+        <InteractiveLetter 
+          key={index} 
+          char={char} 
+          active={active} 
+        />
       ))}
     </span>
   );
 }
 
 function InteractiveParagraph({ text, className = '' }: { text: string; className?: string }) {
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
   return (
     <span className={`inline ${className}`}>
       {text.split(' ').map((word, wordIndex) => (
         <span key={wordIndex} className="inline-block whitespace-nowrap mr-[0.25em] select-none">
           {word.split('').map((char, charIndex) => (
-            <motion.span
+            <InteractiveLetter
               key={charIndex}
-              className="inline-block cursor-default text-inherit hover:text-white hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.65)] transition-all duration-150"
-              style={{ originX: 0.5, originY: 0.5 }}
-              whileHover={isMobile ? undefined : { 
-                scale: 1.25, 
-                y: -4,
-                transition: { type: 'spring', stiffness: 400, damping: 14 } 
-              }}
-            >
-              {char}
-            </motion.span>
+              char={char}
+              active={false}
+              isParagraph={true}
+            />
           ))}
         </span>
       ))}
@@ -339,6 +382,9 @@ export default function App() {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [formStatus, setFormStatus] = useState<{ type: 'success' | 'error' | null; message: string }>({ type: null, message: '' });
   const [botCheck, setBotCheck] = useState(false);
+  const [navVisible, setNavVisible] = useState(true);
+  const lastScrollY = useRef(0);
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 
   const navigate = (page: PageType) => {
     setCurrentPage(page);
@@ -350,13 +396,38 @@ export default function App() {
   };
 
   useEffect(() => {
-    // 1. Force highlight 'home' when at the very top of page
+    // Reset scroll restoration to manual and scroll to top on initial page load / refresh
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
+    setCurrentPage('home');
+  }, []);
+
+  useEffect(() => {
+    // 1. Force highlight 'home' when at the very top of page & toggle navbar visibility
     const handleScroll = () => {
-      if (window.scrollY < 100) {
+      const currentScrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+      const delta = currentScrollY - lastScrollY.current;
+
+      if (currentScrollY < 100) {
         setCurrentPage('home');
+      }
+
+      if (currentScrollY < 50) {
+        setNavVisible(true);
+        lastScrollY.current = currentScrollY;
+      } else if (Math.abs(delta) > 10) {
+        if (delta > 0) {
+          setNavVisible(false);
+        } else {
+          setNavVisible(true);
+        }
+        lastScrollY.current = currentScrollY;
       }
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
+    document.addEventListener('scroll', handleScroll, { passive: true });
 
     // 2. IntersectionObserver for other sections
     const sections: PageType[] = ['home', 'security', 'ai', 'iot', 'cloud'];
@@ -385,6 +456,7 @@ export default function App() {
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('scroll', handleScroll);
       observers.forEach((obs) => {
         if (obs) obs.observer.unobserve(obs.el);
       });
@@ -393,6 +465,20 @@ export default function App() {
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Local client-side rate limiting to prevent spam submission scripts
+    const lastSubmission = localStorage.getItem('form_last_submission');
+    if (lastSubmission) {
+      const timeDiff = Date.now() - parseInt(lastSubmission, 10);
+      if (timeDiff < 60000) {
+        setFormStatus({ 
+          type: 'error', 
+          message: `Rate limit active. Please wait ${Math.ceil((60000 - timeDiff) / 1000)} seconds before sending another message.` 
+        });
+        return;
+      }
+    }
+
     setFormSubmitted(true);
     setFormStatus({ type: null, message: '' });
 
@@ -419,6 +505,7 @@ export default function App() {
       const data = await response.json();
       if (data.success) {
         setFormStatus({ type: 'success', message: 'Thank you! Your message has been sent successfully.' });
+        localStorage.setItem('form_last_submission', Date.now().toString());
         setAlias('');
         setEmail('');
         setSubject('');
@@ -440,7 +527,17 @@ export default function App() {
       <MeshBackground currentPage={currentPage} />
 
       {/* Floating Navbar */}
-      <nav className="fixed z-50 px-5 md:px-10 pt-5 md:pt-6 top-0 left-0 right-0 flex items-center justify-between gap-4 backdrop-blur-[2px]">
+      <motion.nav
+        animate={isMobile ? {
+          y: navVisible ? 0 : -80,
+          opacity: navVisible ? 1 : 0,
+        } : {
+          y: 0,
+          opacity: 1
+        }}
+        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+        className="fixed z-50 px-5 md:px-10 pt-5 md:pt-6 top-0 left-0 right-0 flex items-center justify-between gap-4 backdrop-blur-[2px]"
+      >
         {/* Left Pill (Brand) */}
         <div
           onClick={() => navigate('home')}
@@ -453,12 +550,26 @@ export default function App() {
         </div>
 
         {/* Center Pill (Desktop Nav Links — hidden on mobile) */}
-        <div className="hidden md:flex items-center gap-1 bg-neutral-900/90 backdrop-blur rounded-full px-3 py-2 border border-white/5 shadow-lg shadow-black/50">
+        <motion.div
+          animate={!isMobile ? {
+            clipPath: navVisible 
+              ? 'inset(0% 0% 0% 0% round 9999px)' 
+              : 'inset(0% 50% 0% 50% round 9999px)',
+            opacity: navVisible ? 1 : 0,
+            scale: navVisible ? 1 : 0.93,
+          } : {
+            clipPath: 'inset(0% 0% 0% 0% round 9999px)',
+            opacity: 1,
+            scale: 1,
+          }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className="hidden md:flex items-center gap-1 bg-neutral-900/90 backdrop-blur rounded-full px-3 py-2 border border-white/5 shadow-lg shadow-black/50"
+        >
           {(['home', 'security', 'ai', 'iot', 'cloud'] as const).map((page) => (
             <button
               key={page}
               onClick={() => navigate(page)}
-              className={`text-sm px-5 py-2 rounded-full transition-all font-mono tracking-wider text-xs ${
+              className={`text-sm px-5 py-2 rounded-full transition-all font-mono tracking-wider text-xs whitespace-nowrap ${
                 currentPage === page
                   ? 'bg-white text-black font-semibold'
                   : 'text-neutral-300 hover:text-white'
@@ -471,7 +582,7 @@ export default function App() {
               {page === 'cloud' && <InteractiveWord word="cloud infrastructure" active={currentPage === 'cloud'} />}
             </button>
           ))}
-        </div>
+        </motion.div>
 
         {/* Right side — uplink button (desktop) + hamburger (mobile) */}
         <div className="flex items-center gap-3">
@@ -504,7 +615,7 @@ export default function App() {
             />
           </button>
         </div>
-      </nav>
+      </motion.nav>
 
       {/* Mobile slide-down menu overlay */}
       <div
