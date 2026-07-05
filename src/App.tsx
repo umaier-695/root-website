@@ -691,42 +691,6 @@ export default function App() {
           </div>
         </section>
 
-        {/* VIEW 2: SECURITY COMMAND NODE */}
-        <section id="security" className="scroll-mt-28 py-16 border-t border-white/5">
-          <div className="max-w-5xl mx-auto px-6 md:px-12 mb-12">
-            <span className="text-xs font-mono tracking-widest text-neutral-500 uppercase block mb-2">// SECURITY telemetry MONITOR</span>
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white font-readex">security telemetry</h2>
-          </div>
-          <SecurityNode />
-        </section>
-
-        {/* VIEW 3: AI PIPELINE NODE */}
-        <section id="ai" className="scroll-mt-28 py-16 border-t border-white/5">
-          <div className="max-w-5xl mx-auto px-6 md:px-12 mb-12">
-            <span className="text-xs font-mono tracking-widest text-neutral-500 uppercase block mb-2">// LOCAL AI PIPELINE ORCHESTRATION</span>
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white font-readex">local ai node</h2>
-          </div>
-          <AINode />
-        </section>
-
-        {/* VIEW 4: EMBEDDED CONSOLE NODE */}
-        <section id="iot" className="scroll-mt-28 py-16 border-t border-white/5">
-          <div className="max-w-5xl mx-auto px-6 md:px-12 mb-12">
-            <span className="text-xs font-mono tracking-widest text-neutral-500 uppercase block mb-2">// EMBEDDED SYSTEMS & TELEMETRY MONITOR</span>
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white font-readex">embedded device node</h2>
-          </div>
-          <IoTNode />
-        </section>
-
-        {/* VIEW 5: CLOUD DEVSECOPS DASHBOARD */}
-        <section id="cloud" className="scroll-mt-28 py-16 border-t border-white/5">
-          <div className="max-w-5xl mx-auto px-6 md:px-12 mb-12">
-            <span className="text-xs font-mono tracking-widest text-neutral-500 uppercase block mb-2">// GOOGLE CLOUD DEVSECOPS DASHBOARD</span>
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white font-readex">cloud devsecops</h2>
-          </div>
-          <CloudNode />
-        </section>
-
       </div>
 
       {/* Footer */}
