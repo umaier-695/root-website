@@ -647,7 +647,7 @@ export default function App() {
 
       {/* Mobile slide-down menu overlay */}
       <div
-        className={`fixed inset-x-0 top-0 z-40 md:hidden transition-all duration-300 ease-in-out ${
+        className={`fixed inset-0 z-40 md:hidden transition-all duration-300 ease-in-out ${
           menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
         style={{ transform: menuOpen ? 'translateY(0)' : 'translateY(-8px)' }}
