@@ -42,6 +42,18 @@ function MeshBackground({ currentPage }: { currentPage: PageType }) {
     let clientX = -9999;
     let clientY = -9999;
 
+    // Click Shockwave physics state
+    let clickTime = 0;
+    let clickX = -9999;
+    let clickY = -9999;
+
+    const handleCanvasClick = (e: MouseEvent) => {
+      clickTime = Date.now();
+      clickX = e.clientX;
+      clickY = e.clientY;
+    };
+    window.addEventListener('click', handleCanvasClick, { passive: true });
+
     const handleMouseMove = (e: MouseEvent) => {
       const mouseX = (e.clientX / width) * 2 - 1;
       const mouseY = (e.clientY / height) * 2 - 1;
@@ -146,6 +158,28 @@ function MeshBackground({ currentPage }: { currentPage: PageType }) {
           let xp = x1 * scale + width / 2;
           let yp = y2 * scale + height / 2 + yOffset;
 
+          // SHOCKWAVE RIPPLE CLICK EVENTS: Emits expanding ring forces on click/tap
+          const clickElapsed = (Date.now() - clickTime) * 0.001; // in seconds
+          if (clickElapsed < 1.5) {
+            const rippleSpeed = 480; // pixels per second
+            const rippleRadius = clickElapsed * rippleSpeed;
+            const maxRippleWidth = 100; // wavefront thickness in pixels
+
+            const dxClick = xp - clickX;
+            const dyClick = yp - clickY;
+            const distClick = Math.sqrt(dxClick * dxClick + dyClick * dyClick);
+
+            if (distClick > 0) {
+              const distFromWavefront = Math.abs(distClick - rippleRadius);
+              if (distFromWavefront < maxRippleWidth) {
+                // Wavefront force multiplier (falls off as wavefront expands)
+                const force = (1 - distFromWavefront / maxRippleWidth) * (1 - clickElapsed / 1.5) * 55;
+                xp += (dxClick / distClick) * force;
+                yp += (dyClick / distClick) * force;
+              }
+            }
+          }
+
           // MAGNETIC WARP: Bends grid coordinates outwards away from mouse pointer (Optimized using Squared Distance)
           const dx = xp - clientX;
           const dy = yp - clientY;
@@ -214,7 +248,7 @@ function MeshBackground({ currentPage }: { currentPage: PageType }) {
         }
       }
 
-      // Draw grid nodes (dots at vertices)
+      // Draw grid nodes (dots or custom markers at vertices)
       const dotOpacity = isHome ? 0.45 : 0.22;
       for (let r = 0; r < rows; r += 2) {
         for (let c = 0; c < cols; c += 2) {
@@ -226,21 +260,56 @@ function MeshBackground({ currentPage }: { currentPage: PageType }) {
           const dy = p.y - clientY;
           const distSq = dx * dx + dy * dy;
 
-          ctx.beginPath();
-          if (distSq < 22500) { // 150 * 150 (Optimized using Squared Distance)
-            const dist = Math.sqrt(distSq);
-            const glowFactor = (150 - dist) / 150;
-            const size = (1.0 + zDepthFade * 1.2) * (1 + glowFactor * 1.8);
-            const alpha = dotOpacity * zDepthFade * (1 + glowFactor * 2.5);
-            ctx.fillStyle = `rgba(${themeColor}, ${alpha})`;
-            ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
-          } else {
-            const size = 1.0 + zDepthFade * 1.2;
-            const alpha = dotOpacity * zDepthFade;
-            ctx.fillStyle = `rgba(${themeColor}, ${alpha})`;
-            ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+          // AI Synapse links: Draw fine connecting wires from touch/cursor coordinates directly to closest vertices
+          if (activePage === 'ai' && distSq < 22500) { // 150 * 150
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(clientX, clientY);
+            ctx.strokeStyle = `rgba(${themeColor}, ${zDepthFade * 0.18})`;
+            ctx.lineWidth = 0.45;
+            ctx.stroke();
           }
-          ctx.fill();
+
+          ctx.beginPath();
+          if (activePage === 'security') {
+            // Reverted back to clean circle dots
+            if (distSq < 22500) {
+              const dist = Math.sqrt(distSq);
+              const glowFactor = (150 - dist) / 150;
+              const size = (1.0 + zDepthFade * 1.2) * (1 + glowFactor * 1.8);
+              const alpha = dotOpacity * zDepthFade * (1 + glowFactor * 2.5);
+              ctx.fillStyle = `rgba(${themeColor}, ${alpha})`;
+              ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+            } else {
+              const size = 1.0 + zDepthFade * 1.2;
+              const alpha = dotOpacity * zDepthFade;
+              ctx.fillStyle = `rgba(${themeColor}, ${alpha})`;
+              ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+            }
+            ctx.fill();
+          } else if (activePage === 'iot') {
+            // Edge Computing (IoT) Node: Binary numbers 0 and 1
+            ctx.font = 'bold 8px monospace';
+            const alpha = dotOpacity * zDepthFade * (distSq < 22500 ? 1.8 : 1.0);
+            ctx.fillStyle = `rgba(${themeColor}, ${alpha})`;
+            ctx.fillText((r + c) % 2 === 0 ? '0' : '1', p.x - 3, p.y + 3);
+          } else {
+            // Default Overview & other pages: circles
+            if (distSq < 22500) {
+              const dist = Math.sqrt(distSq);
+              const glowFactor = (150 - dist) / 150;
+              const size = (1.0 + zDepthFade * 1.2) * (1 + glowFactor * 1.8);
+              const alpha = dotOpacity * zDepthFade * (1 + glowFactor * 2.5);
+              ctx.fillStyle = `rgba(${themeColor}, ${alpha})`;
+              ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+            } else {
+              const size = 1.0 + zDepthFade * 1.2;
+              const alpha = dotOpacity * zDepthFade;
+              ctx.fillStyle = `rgba(${themeColor}, ${alpha})`;
+              ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+            }
+            ctx.fill();
+          }
         }
       }
 
@@ -250,6 +319,7 @@ function MeshBackground({ currentPage }: { currentPage: PageType }) {
     draw();
 
     return () => {
+      window.removeEventListener('click', handleCanvasClick);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseleave', handleMouseLeave);
       window.removeEventListener('touchmove', handleTouchMove);
@@ -566,6 +636,24 @@ export default function App() {
       {/* Background Mesh Network Canvas */}
       <MeshBackground currentPage={currentPage} />
 
+      {/* Ambient Glowmorphism Backdrops */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-30 transition-all duration-1000">
+        <div className={`absolute top-[20%] left-[15%] w-[60vw] h-[60vw] max-w-[650px] rounded-full blur-[160px] transition-all duration-1000 ${
+          currentPage === 'home' ? 'bg-white/5' :
+          currentPage === 'security' ? 'bg-emerald-500/10' :
+          currentPage === 'ai' ? 'bg-indigo-500/10' :
+          currentPage === 'iot' ? 'bg-amber-500/10' :
+          'bg-cyan-500/10'
+        }`} />
+        <div className={`absolute bottom-[20%] right-[15%] w-[55vw] h-[55vw] max-w-[550px] rounded-full blur-[140px] transition-all duration-1000 ${
+          currentPage === 'home' ? 'bg-white/3' :
+          currentPage === 'security' ? 'bg-emerald-600/5' :
+          currentPage === 'ai' ? 'bg-purple-500/5' :
+          currentPage === 'iot' ? 'bg-yellow-500/5' :
+          'bg-blue-500/5'
+        }`} />
+      </div>
+
       {/* Floating Navbar */}
       <motion.nav
         animate={isMobile ? {
@@ -630,7 +718,7 @@ export default function App() {
           <a
             href="#contact"
             onClick={() => setCurrentPage('home')}
-            className="hidden md:inline-flex bg-white text-black text-sm font-normal rounded-full px-6 py-3 hover:bg-neutral-200 transition-colors shadow-lg shadow-black/40"
+            className="hidden md:inline-flex bg-white text-black text-xs font-mono font-bold uppercase border-2 border-black px-6 py-3 transition-all shadow-[4px_4px_0px_rgba(255,255,255,0.8)] hover:shadow-[6px_6px_0px_rgba(255,255,255,1)] hover:bg-neutral-100 active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_rgba(255,255,255,0.8)]"
           >
             <InteractiveWord word="contact" active={true} />
           </a>
@@ -722,7 +810,7 @@ export default function App() {
             <a
               href="#contact"
               onClick={() => { setCurrentPage('home'); setMenuOpen(false); }}
-              className="flex items-center justify-center gap-2 w-full py-3 bg-white text-black text-xs font-mono tracking-widest rounded-2xl hover:bg-neutral-200 transition-colors"
+              className="flex items-center justify-center gap-2 w-full py-3.5 bg-white text-black text-xs font-mono font-bold tracking-widest uppercase border-2 border-black transition-all shadow-[4px_4px_0px_rgba(255,255,255,0.8)] hover:shadow-[6px_6px_0px_rgba(255,255,255,1)] hover:bg-neutral-100 active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_rgba(255,255,255,0.8)]"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-3.5 h-3.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 1 1.242 7.244" />
@@ -1101,7 +1189,7 @@ export default function App() {
                 <button
                   type="submit"
                   disabled={formSubmitted}
-                  className="w-full bg-white text-black py-3 rounded-xl text-xs font-mono tracking-widest hover:bg-neutral-200 transition-colors disabled:opacity-50"
+                  className="w-full bg-white text-black py-3 px-6 border-2 border-black text-xs font-mono font-bold tracking-widest uppercase transition-all shadow-[4px_4px_0px_rgba(255,255,255,0.8)] hover:shadow-[6px_6px_0px_rgba(255,255,255,1)] hover:bg-neutral-100 active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_rgba(255,255,255,0.8)] disabled:opacity-50"
                 >
                   {formSubmitted 
                     ? <InteractiveWord word="sending message..." active={true} /> 
@@ -1144,7 +1232,7 @@ export default function App() {
         }}
         animate={navVisible ? { y: 0, scale: 1, opacity: 1 } : { y: 80, scale: 0.8, opacity: 0 }}
         transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-        className="md:hidden fixed bottom-6 right-6 z-40 flex items-center justify-center gap-2 bg-white text-black font-semibold rounded-full px-5 py-3 shadow-2xl shadow-black border border-white/20 active:scale-95 transition-transform"
+        className="md:hidden fixed bottom-6 right-6 z-40 flex items-center justify-center gap-2 bg-white text-black font-mono font-bold text-xs uppercase border-2 border-black px-5 py-3.5 shadow-[4px_4px_0px_rgba(255,255,255,0.85)] hover:shadow-[6px_6px_0px_rgba(255,255,255,1)] hover:bg-neutral-100 active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_rgba(255,255,255,0.85)] transition-all"
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
         <InteractiveWord word="contact" active={true} className="text-xs font-mono tracking-wider uppercase" />

@@ -47,7 +47,7 @@ function SpatialCard({ title, category, description, points }: SpatialCardProps)
       }}
       className="bg-white text-black border-4 border-black p-5 sm:p-6 select-none cursor-pointer flex flex-col justify-between h-auto min-h-[300px] sm:min-h-[360px]
                  shadow-[6px_6px_0px_rgba(255,255,255,0.8)] 
-                 hover:shadow-[12px_12px_0px_rgba(255,255,255,0.9)] hover:border-white transition-shadow duration-300"
+                 hover:shadow-[12px_12px_0px_rgba(255,255,255,0.9)] hover:border-emerald-500 transition-all duration-300"
     >
       <div className="space-y-4">
         <div className="flex items-center justify-between">
@@ -85,30 +85,79 @@ export default function SecurityNode() {
     'SEC_PT: initializing OWASP pentest vector...',
     'SEC_PT: analyzing target application for SSRF & Access Control vulnerabilities...',
     'SEC_PT: OSINT threat surface mapping via Maigret active.',
-    'SEC_PT: low-noise reconnaissance pipeline operational.'
+    'SEC_PT: low-noise reconnaissance pipeline operational.',
+    'type "help" for a list of available custom interactive commands.'
   ]);
   const [cmdInput, setCmdInput] = useState('');
-  const logEndRef = useRef<HTMLDivElement>(null);
+  const logsContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (logEndRef.current) {
-      logEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (logsContainerRef.current) {
+      // Direct internal container scrolling (zero side effects on main window scroll)
+      logsContainerRef.current.scrollTop = logsContainerRef.current.scrollHeight;
     }
   }, [logs]);
 
   const handleCommand = (e: React.FormEvent) => {
     e.preventDefault();
     if (!cmdInput.trim()) return;
+    const cleanCmd = cmdInput.trim().toLowerCase();
     const newLogs = [...logs, `root@shell:~$ ${cmdInput}`];
     
-    if (cmdInput.toLowerCase() === 'clear') {
+    if (cleanCmd === 'clear') {
       setLogs([]);
-    } else if (cmdInput.toLowerCase() === 'scan') {
+    } else if (cleanCmd === 'help') {
+      setLogs([
+        ...newLogs,
+        'AVAILABLE SHELL COMMANDS:',
+        '  - help    : Renders the active interactive command menu helper.',
+        '  - scan    : Initiates offensive vulnerability footprint scans.',
+        '  - about   : Prints professional summary & business statement.',
+        '  - skills  : Outlines core DevOps, cloud architecture & security stacks.',
+        '  - contact : Displays credentials details & emails.',
+        '  - fiverr  : Coordinates for hiring contracts.',
+        '  - clear   : Flushes active terminal shell buffers.'
+      ]);
+    } else if (cleanCmd === 'scan') {
       setLogs([
         ...newLogs,
         'SCAN: initiating automated threat footprint scan...',
         'SCAN: external attack surfaces mapped using Maigret.',
         'SCAN: 0 vulnerabilities found on active routes.'
+      ]);
+    } else if (cleanCmd === 'about') {
+      setLogs([
+        ...newLogs,
+        'SUMMARY STATEMENT:',
+        '  Systems & Cloud Engineer specializing in enterprise cloud architecture,',
+        '  vulnerability auditing, and localized private AI pipelines.',
+        '  Building resilient GKE workloads, zero-trust cloud network security,',
+        '  and hardware edge nodes.'
+      ]);
+    } else if (cleanCmd === 'skills') {
+      setLogs([
+        ...newLogs,
+        'CAPABILITIES ARCHITECTURE:',
+        '  [1] CLOUD DEV&OPS : GCP, Kubernetes (GKE), Cloud Run, VPC IAM routing',
+        '  [2] CYBERSECURITY : Vulnerability audits, OWASP threat modeling',
+        '  [3] APPLIED AI    : Self-hosted LLM clusters, local vLLM RAG networks',
+        '  [4] EDGE NODES    : Embedded C++ mechatronics, off-grid telemetry gateway'
+      ]);
+    } else if (cleanCmd === 'contact') {
+      setLogs([
+        ...newLogs,
+        'COMMUNICATION PATHWAYS:',
+        '  - Email Address : umaierjavid391@gmail.com',
+        '  - Fiverr Profile: https://www.fiverr.com/umaierjavid392',
+        '  - Credly Badge  : https://www.credly.com/users/umaier-javid'
+      ]);
+    } else if (cleanCmd === 'fiverr') {
+      setLogs([
+        ...newLogs,
+        'FIVERR ESCROW HIRE CONTRACTS:',
+        '  Available for custom consulting contracts, penetration tests, private AI configurations,',
+        '  or edge microservice telemetry gateways. Book details at:',
+        '  https://www.fiverr.com/umaierjavid392'
       ]);
     } else {
       setLogs([...newLogs, `command execution complete. status: 200`]);
@@ -119,18 +168,18 @@ export default function SecurityNode() {
   return (
     <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-10 sm:space-y-12 animate-fadeIn select-none">
       
-      {/* Brutalist Section Header */}
+      {/* Section Header */}
       <div className="border-b-4 border-white pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <span className="font-mono text-xs font-black uppercase bg-white text-black px-2 py-1 inline-block mb-3">
-            // security node
+            // security operations
           </span>
           <h2 className="text-4xl font-extrabold tracking-tighter uppercase font-mono text-white leading-none">
-            vulnerability auditing
+            cybersecurity & compliance audits
           </h2>
         </div>
         <div className="font-mono text-xs text-white/50 text-right">
-          SHELL TERMINAL: CYBERSECURITY
+          VULNERABILITY ASSESSMENT & RISK REMEDIATION
         </div>
       </div>
 
@@ -138,34 +187,34 @@ export default function SecurityNode() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 pt-4">
         <SpatialCard
           category="assessment"
-          title="owasp testing"
-          description="executing application penetration tests to locate and patch critical structural issues such as Injection, SSRF, and Access Control flaws."
+          title="penetration testing"
+          description="executing application penetration tests to locate and patch critical structural issues such as Injection, SSRF, and Access Control flaws before malicious actors exploit them."
           points={[
             'OWASP framework compliance',
-            'Vulnerability assessments',
-            'Defensive code remediation'
+            'Defensive code remediation',
+            'Actionable risk mitigation reports'
           ]}
         />
         
         <SpatialCard
           category="recon"
-          title="osint & maigret"
-          description="advanced open-source intelligence gathering, threat modeling, and cross-platform identity mapping utilizing Maigret configurations."
+          title="threat surface mapping"
+          description="advanced threat modeling and external surface analysis to identify exposed databases, leaked credentials, and network perimeter vulnerabilities."
           points={[
-            'Identity mapping automation',
-            'External attack surface mapping',
-            'Automated identity discovery'
+            'Perimeter hardening audits',
+            'Digital footprint discovery',
+            'External attack surface analysis'
           ]}
         />
         
         <SpatialCard
           category="automation"
-          title="pentest pipelines"
-          description="scripting custom automated testing pipelines to perform continuous vulnerability monitoring and low-noise network recon."
+          title="continuous monitoring"
+          description="scripting and deploying customized continuous vulnerability monitoring dashboards and low-noise threat detection sensors."
           points={[
-            'Automated recon pipelines',
-            'Continuous threat monitoring',
-            'Custom low-noise script setups'
+            'Automated security scanning',
+            'Real-time compliance checks',
+            'Secure CI/CD pipe integrations'
           ]}
         />
       </div>
@@ -181,13 +230,12 @@ export default function SecurityNode() {
           </div>
         </div>
 
-        <div className="h-44 overflow-y-auto font-mono text-xs text-neutral-400 space-y-2 select-text leading-tight">
+        <div ref={logsContainerRef} className="h-44 overflow-y-auto font-mono text-xs text-neutral-400 space-y-2 select-text leading-tight scroll-smooth">
           {logs.map((log, idx) => (
-            <div key={idx} className="leading-relaxed break-all">
+            <div key={idx} className="leading-relaxed whitespace-pre-wrap break-all">
               {log}
             </div>
           ))}
-          <div ref={logEndRef} />
         </div>
 
         <form onSubmit={handleCommand} className="flex gap-2 pt-3 border-t border-neutral-900">
@@ -196,7 +244,7 @@ export default function SecurityNode() {
             type="text"
             value={cmdInput}
             onChange={(e) => setCmdInput(e.target.value)}
-            placeholder="type 'scan' or 'clear'..."
+            placeholder="type 'help', 'scan', 'about', 'clear'..."
             className="flex-1 bg-transparent border-b-2 border-white/20 text-xs font-mono text-white focus:outline-none focus:border-white py-1"
           />
         </form>

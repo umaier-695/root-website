@@ -37,7 +37,7 @@ function SpatialGlassCard({ children, className = '' }: SpatialGlassCardProps) {
         transform: `perspective(1000px) rotateX(${coords.x}deg) rotateY(${coords.y}deg)`,
         transition: isHovered ? 'none' : 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
       }}
-      className={`bg-white/[0.02] border border-white/10 backdrop-blur-xl p-6 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-all hover:border-white/20 select-none ${className}`}
+      className={`bg-white/[0.02] border border-white/10 backdrop-blur-xl p-6 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-all hover:border-indigo-500/50 hover:shadow-[0_0_25px_rgba(99,102,241,0.15)] select-none ${className}`}
     >
       {children}
     </div>
@@ -62,20 +62,20 @@ export default function AINode() {
             // intelligence layer
           </span>
           <h2 className="text-3xl font-semibold tracking-tight text-white font-readex">
-            local ai integration specifications
+            enterprise ai & llm integration
           </h2>
         </div>
 
-        {/* Bento Grid Layout (No interactive chat simulation, showing real details) */}
+        {/* Bento Grid Layout */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-4 sm:gap-6 font-mono text-white">
           
           {/* Card 1: Active LLM Models (md:col-span-3) */}
           <SpatialGlassCard className="sm:col-span-1 md:col-span-3 h-auto min-h-[280px] sm:min-h-[320px] flex flex-col justify-between">
             <div className="space-y-4">
-              <span className="text-[9px] text-cyan-400 uppercase tracking-widest block">// active models</span>
-              <h3 className="text-lg font-bold font-readex uppercase text-white leading-none">local models configured</h3>
+              <span className="text-[9px] text-cyan-400 uppercase tracking-widest block">// architecture</span>
+              <h3 className="text-lg font-bold font-readex uppercase text-white leading-none">private ai deployment</h3>
               <p className="text-xs text-neutral-400 font-light leading-relaxed">
-                utilizing high-performance local inference engines optimized for code generation, security analysis, and private scripting.
+                architecting high-performance private AI inference nodes running on dedicated customer hardware. ensures complete data sovereignty and zero reliance on third-party cloud APIs.
               </p>
             </div>
 
@@ -91,7 +91,7 @@ export default function AINode() {
             </div>
 
             <div className="text-[8px] text-neutral-500 border-t border-white/5 pt-2 uppercase">
-              orchestration runtime: Ollama local socket link
+              orchestration runtime: Ollama & vLLM local setups
             </div>
           </SpatialGlassCard>
 
@@ -99,9 +99,9 @@ export default function AINode() {
           <SpatialGlassCard className="sm:col-span-1 md:col-span-3 h-auto min-h-[280px] sm:min-h-[320px] flex flex-col justify-between">
             <div className="space-y-4">
               <span className="text-[9px] text-purple-400 uppercase tracking-widest block">// zero data egress</span>
-              <h3 className="text-lg font-bold font-readex uppercase text-white leading-none">developer autonomy</h3>
+              <h3 className="text-lg font-bold font-readex uppercase text-white leading-none">enterprise data privacy</h3>
               <p className="text-xs text-neutral-400 font-light leading-relaxed">
-                enforcing strict code confidentiality constraints. prompts and sensitive file structures are parsed entirely on localhost hardware.
+                enforcing strict code and telemetry confidentiality constraints. sensitive corporate files and queries are parsed entirely on localhost sockets.
               </p>
             </div>
 
@@ -117,17 +117,17 @@ export default function AINode() {
             </div>
 
             <div className="text-[8px] text-neutral-500 border-t border-white/5 pt-2 uppercase">
-              compliance parameters: strict local data privacy
+              compliance parameters: strict corporate data safety
             </div>
           </SpatialGlassCard>
 
           {/* Card 3: Model Context Protocol (md:col-span-4) */}
           <SpatialGlassCard className="sm:col-span-2 md:col-span-4 h-auto min-h-[180px] sm:min-h-[220px] flex flex-col justify-between">
             <div className="space-y-3">
-              <span className="text-[9px] text-cyan-400 uppercase tracking-widest block">// context layer</span>
-              <h3 className="text-lg font-bold font-readex uppercase text-white leading-none">model context protocol (mcp)</h3>
+              <span className="text-[9px] text-cyan-400 uppercase tracking-widest block">// context integration</span>
+              <h3 className="text-lg font-bold font-readex uppercase text-white leading-none">context-aware automation (mcp)</h3>
               <p className="text-xs text-neutral-400 font-light leading-relaxed">
-                mapping local directory paths directly to local model contexts. translates relative file schemas, indexes workspaces, and allows safe localized API hooks without uploading directory trees to external servers.
+                integrating the Model Context Protocol (MCP) to map complex internal systems and databases directly into LLM contexts. translates relative file schemas, indexes workspaces, and allows safe localized API agent hooks.
               </p>
             </div>
 
@@ -139,22 +139,22 @@ export default function AINode() {
           {/* Card 4: Directory Map details (md:col-span-2) */}
           <SpatialGlassCard className="sm:col-span-2 md:col-span-2 h-auto min-h-[180px] sm:min-h-[220px] flex flex-col justify-between">
             <div className="space-y-3">
-              <span className="text-[9px] text-neutral-500 uppercase tracking-widest block">// active workspaces</span>
-              <h3 className="text-sm font-bold font-readex uppercase text-white leading-none">directory indexes</h3>
+              <span className="text-[9px] text-neutral-500 uppercase tracking-widest block">// telemetry targets</span>
+              <h3 className="text-sm font-bold font-readex uppercase text-white leading-none">pipeline telemetry</h3>
             </div>
 
             <div className="bg-[#121214]/60 border border-white/5 p-3.5 rounded-2xl space-y-1.5 text-[9px] text-neutral-400">
               <div className="flex justify-between">
-                <span>Workspace root:</span>
-                <span className="text-white font-bold">/umaierjavid/Root/</span>
+                <span>Deploy mode:</span>
+                <span className="text-white font-bold">Private clusters</span>
               </div>
               <div className="flex justify-between">
-                <span>Configs path:</span>
-                <span className="text-white">/config/plugins/</span>
+                <span>Inference:</span>
+                <span className="text-white">vLLM & Ollama</span>
               </div>
               <div className="flex justify-between">
-                <span>Uplink targets:</span>
-                <span className="text-white">localhost:11434</span>
+                <span>Alignment:</span>
+                <span className="text-white">Enterprise SOC2</span>
               </div>
             </div>
 

@@ -35,7 +35,7 @@ function BrutalistCard({ children, className = '', shadowColor = '#18f700' }: Br
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={handleMouseLeave}
-      className={`bg-white text-black border-4 border-black p-6 select-none flex flex-col justify-between transition-shadow duration-300 ${className}`}
+      className={`bg-white text-black border-4 border-black p-6 select-none flex flex-col justify-between transition-all duration-300 hover:border-cyan-500 ${className}`}
       style={{
         transform: `perspective(1000px) rotateX(${coords.x}deg) rotateY(${coords.y}deg)`,
         transition: isHovered ? 'none' : 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
@@ -55,14 +55,14 @@ export default function CloudNode() {
         {/* Header */}
         <div className="mb-2">
           <span className="text-xs font-mono tracking-widest text-neutral-500 uppercase block mb-1">
-            // cloud deployment
+            // cloud infrastructure
           </span>
           <h2 className="text-3xl font-semibold tracking-tight text-white font-readex">
-            gcp cloud engineering specifications
+            enterprise cloud & devops engineering
           </h2>
         </div>
 
-        {/* Minimalist Brutalist Bento Grid Layout (No interactive mock scaling switches) */}
+        {/* Minimalist Brutalist Bento Grid Layout */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-4 sm:gap-6 items-start font-mono">
           
           {/* Card 1: GKE Workloads Container (md:col-span-3) */}
@@ -72,16 +72,16 @@ export default function CloudNode() {
                 orchestration
               </span>
               <h3 className="text-lg font-black uppercase tracking-tight text-black">
-                kubernetes clusters
+                container orchestration
               </h3>
             </div>
 
             <div className="py-2 text-black">
-              <div className="text-3xl font-black leading-none uppercase">
-                12+ active services
+              <div className="text-2xl font-black leading-none uppercase">
+                kubernetes clusters
               </div>
-              <p className="text-[10px] text-neutral-600 uppercase font-bold mt-1">
-                running on Google Kubernetes Engine (GKE). utilizes dynamic pod auto-scaling metrics, load partitioning, and zero-downtime rolling upgrades.
+              <p className="text-[10px] text-neutral-600 uppercase font-bold mt-2 leading-relaxed">
+                designing and deploying production-grade Google Kubernetes Engine (GKE) clusters. leverages dynamic pod autoscaling, isolated node pools, and zero-downtime rolling upgrades.
               </p>
             </div>
 
@@ -97,16 +97,16 @@ export default function CloudNode() {
                 networking
               </span>
               <h3 className="text-lg font-black uppercase tracking-tight text-black">
-                vpc routing & firewalls
+                zero-trust infrastructure
               </h3>
             </div>
 
             <div className="py-2 text-black">
-              <div className="text-3xl font-black leading-none uppercase">
-                zero-trust vpc
+              <div className="text-2xl font-black leading-none uppercase">
+                vpc routing & networks
               </div>
-              <p className="text-[10px] text-neutral-600 uppercase font-bold mt-1">
-                enforcing firewall routing rules, private subnet isolations, fine-grained Cloud IAM authentication parameters, and global Cloud Load Balancing structures.
+              <p className="text-[10px] text-neutral-600 uppercase font-bold mt-2 leading-relaxed">
+                building hardened cloud network perimeters using strict IAM credentials, security policies, private subnets, and global Cloud Load Balancing structures.
               </p>
             </div>
 
@@ -122,17 +122,17 @@ export default function CloudNode() {
                 credentials
               </span>
               <h3 className="text-lg font-black uppercase tracking-tight text-black">
-                google cloud badges & verified credentials
+                cloud accreditations & verification
               </h3>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 items-center text-black py-2">
               <div className="md:col-span-2">
-                <div className="text-3xl font-black leading-none uppercase">
+                <div className="text-2xl font-black leading-none uppercase">
                   +6 cloud credentials verified
                 </div>
-                <p className="text-[10px] text-neutral-600 uppercase font-bold mt-2">
-                  credential pathways include: google cloud computing foundations, infrastructure, networking, cloud security engineering, and kubernetes deployment.
+                <p className="text-[10px] text-neutral-600 uppercase font-bold mt-2 leading-relaxed">
+                  accredited google cloud capabilities including cloud computing foundations, scaling architecture, infrastructure networking, cloud security engineering, and GKE deployments.
                 </p>
               </div>
 
@@ -150,7 +150,7 @@ export default function CloudNode() {
 
             <div className="text-[9px] font-bold text-black border-t border-black/10 pt-2 uppercase flex justify-between">
               <span>id: <a href="https://mail.google.com/mail/?view=cm&fs=1&to=umaierjavid391@gmail.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-neutral-700 transition-colors">umaierjavid391@gmail.com</a></span>
-              <span>accreditation client: credly verified</span>
+              <span>accreditation provider: credly verified</span>
             </div>
           </BrutalistCard>
 
