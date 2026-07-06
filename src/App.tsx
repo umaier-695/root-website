@@ -23,9 +23,9 @@ function MeshBackground({ currentPage }: { currentPage: PageType }) {
     let height = (canvas.height = window.innerHeight);
 
     const isMobile = width < 768;
-    const cols = isMobile ? 16 : 22;
-    const rows = isMobile ? 18 : 22;
-    const spacing = isMobile ? 36 : 45;
+    const cols = isMobile ? 14 : 22;
+    const rows = isMobile ? 14 : 22;
+    const spacing = isMobile ? 40 : 45;
 
     let rotX = 1.0; // Initial tilt angle (looking down at terrain)
     let rotY = 0.0; // Initial rotation angle
@@ -138,15 +138,17 @@ function MeshBackground({ currentPage }: { currentPage: PageType }) {
           let xp = x1 * scale + width / 2;
           let yp = y2 * scale + height / 2 + yOffset;
 
-          // MAGNETIC WARP: Bends grid coordinates outwards away from mouse pointer
+          // MAGNETIC WARP: Bends grid coordinates outwards away from mouse pointer (Optimized using Squared Distance)
           const dx = xp - clientX;
           const dy = yp - clientY;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 180) {
-            const force = (180 - dist) / 180;
-            // Push coordinates away dynamically
-            xp += (dx / dist) * force * 24;
-            yp += (dy / dist) * force * 24;
+          const distSq = dx * dx + dy * dy;
+          if (distSq < 32400) { // 180 * 180
+            const dist = Math.sqrt(distSq);
+            if (dist > 0) {
+              const force = (180 - dist) / 180;
+              xp += (dx / dist) * force * 24;
+              yp += (dy / dist) * force * 24;
+            }
           }
 
           grid[r].push({ x: xp, y: yp, z: z2 });
@@ -157,13 +159,14 @@ function MeshBackground({ currentPage }: { currentPage: PageType }) {
       const drawLine = (p1: any, p2: any, alpha: number) => {
         const dx = (p1.x + p2.x) / 2 - clientX;
         const dy = (p1.y + p2.y) / 2 - clientY;
-        const dist = Math.sqrt(dx * dx + dy * dy);
+        const distSq = dx * dx + dy * dy;
         
         ctx.beginPath();
         ctx.moveTo(p1.x, p1.y);
         ctx.lineTo(p2.x, p2.y);
 
-        if (dist < 160) {
+        if (distSq < 25600) { // 160 * 160 (Optimized using Squared Distance to prevent Math.sqrt on far lines)
+          const dist = Math.sqrt(distSq);
           const glowFactor = (160 - dist) / 160;
           ctx.lineWidth = 0.55 + glowFactor * 0.95;
           ctx.strokeStyle = `rgba(${themeColor}, ${alpha * (1 + glowFactor * 3.5)})`;
