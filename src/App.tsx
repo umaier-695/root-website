@@ -5,8 +5,9 @@ import SecurityNode from './components/SecurityNode';
 import AINode from './components/AINode';
 import IoTNode from './components/IoTNode';
 import CloudNode from './components/CloudNode';
+import WebNode from './components/WebNode';
 
-type PageType = 'home' | 'security' | 'ai' | 'iot' | 'cloud';
+type PageType = 'home' | 'security' | 'ai' | 'iot' | 'cloud' | 'web';
 
 function MeshBackground({ currentPage }: { currentPage: PageType }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -115,6 +116,7 @@ function MeshBackground({ currentPage }: { currentPage: PageType }) {
       if (activePage === 'ai') themeColor = '99, 102, 241'; // deep indigo
       if (activePage === 'iot') themeColor = '245, 158, 11'; // amber/orange
       if (activePage === 'cloud') themeColor = '6, 182, 212'; // sky cyan
+      if (activePage === 'web') themeColor = '168, 85, 247'; // neon purple/magenta
 
       // Camera configurations
       const focalLength = 380;
@@ -647,6 +649,7 @@ export default function App() {
           currentPage === 'security' ? 'bg-emerald-500/10' :
           currentPage === 'ai' ? 'bg-indigo-500/10' :
           currentPage === 'iot' ? 'bg-amber-500/10' :
+          currentPage === 'web' ? 'bg-purple-500/10' :
           'bg-cyan-500/10'
         }`} />
         <div className={`absolute bottom-[20%] right-[15%] w-[55vw] h-[55vw] max-w-[550px] rounded-full blur-[140px] transition-all duration-1000 ${
@@ -654,6 +657,7 @@ export default function App() {
           currentPage === 'security' ? 'bg-emerald-600/5' :
           currentPage === 'ai' ? 'bg-purple-500/5' :
           currentPage === 'iot' ? 'bg-yellow-500/5' :
+          currentPage === 'web' ? 'bg-purple-600/5' :
           'bg-blue-500/5'
         }`} />
       </div>
@@ -697,7 +701,7 @@ export default function App() {
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           className="hidden md:flex items-center gap-1 bg-neutral-900/90 backdrop-blur rounded-full px-3 py-2 border border-white/5 shadow-lg shadow-black/50"
         >
-          {(['home', 'security', 'ai', 'iot', 'cloud'] as const).map((page) => (
+          {(['home', 'security', 'ai', 'iot', 'cloud', 'web'] as const).map((page) => (
             <button
               key={page}
               onClick={() => navigate(page)}
@@ -712,6 +716,7 @@ export default function App() {
               {page === 'ai' && <InteractiveWord word="applied intelligence" active={currentPage === 'ai'} />}
               {page === 'iot' && <InteractiveWord word="edge computing" active={currentPage === 'iot'} />}
               {page === 'cloud' && <InteractiveWord word="cloud infrastructure" active={currentPage === 'cloud'} />}
+              {page === 'web' && <InteractiveWord word="web development" active={currentPage === 'web'} />}
             </button>
           ))}
         </motion.div>
@@ -781,6 +786,7 @@ export default function App() {
               { page: 'ai', label: 'applied intelligence', sub: 'ollama & llm pipelines' },
               { page: 'iot', label: 'edge computing', sub: 'esp8266 & iot systems' },
               { page: 'cloud', label: 'cloud infrastructure', sub: 'kubernetes & devsecops' },
+              { page: 'web', label: 'web development', sub: 'next.js & full-stack applications' },
             ] as { page: PageType; label: string; sub: string }[]).map(({ page, label, sub }) => (
               <button
                 key={page}
@@ -1032,6 +1038,24 @@ export default function App() {
             </h2>
           </div>
           <CloudNode />
+        </motion.section>
+
+        {/* VIEW 6: WEB DEVELOPMENT NODE */}
+        <motion.section
+          id="web"
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="scroll-mt-28 py-16 border-t border-white/5"
+        >
+          <div className="max-w-5xl mx-auto px-6 md:px-12 mb-12 select-none">
+            <span className="text-xs font-mono tracking-wider text-neutral-500 block mb-2 console-cursor">// full-stack development node</span>
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white font-readex">
+              <DecryptText text="web development node" />
+            </h2>
+          </div>
+          <WebNode />
         </motion.section>
 
         {/* CONTACT FORM */}
