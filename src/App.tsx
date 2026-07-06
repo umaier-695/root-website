@@ -51,8 +51,29 @@ function MeshBackground({ currentPage }: { currentPage: PageType }) {
       clientY = -9999;
     };
 
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length === 0) return;
+      const touch = e.touches[0];
+      const mouseX = (touch.clientX / width) * 2 - 1;
+      const mouseY = (touch.clientY / height) * 2 - 1;
+      targetRotY = mouseX * 0.3;
+      targetRotX = 1.0 + mouseY * 0.25;
+      clientX = touch.clientX;
+      clientY = touch.clientY;
+    };
+
+    const handleTouchEnd = () => {
+      targetRotY = 0.0;
+      targetRotX = 1.0;
+      clientX = -9999;
+      clientY = -9999;
+    };
+
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
     window.addEventListener('mouseleave', handleMouseLeave, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    window.addEventListener('touchstart', handleTouchMove, { passive: true });
+    window.addEventListener('touchend', handleTouchEnd, { passive: true });
 
     const handleResize = () => {
       if (!canvas) return;
@@ -219,6 +240,9 @@ function MeshBackground({ currentPage }: { currentPage: PageType }) {
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseleave', handleMouseLeave);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchstart', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
       window.removeEventListener('resize', handleResize);
       cancelAnimationFrame(animationFrameId);
     };
