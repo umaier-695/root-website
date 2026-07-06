@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, AnimatePresence } from 'framer-motion';
 import HomeNode from './components/HomeNode';
 import SecurityNode from './components/SecurityNode';
 import AINode from './components/AINode';
@@ -615,6 +615,10 @@ export default function App() {
       const data = await response.json();
       if (data.success) {
         setFormStatus({ type: 'success', message: 'Thank you! Your message has been sent successfully.' });
+        // Automatically dismiss success status notification after 3000ms
+        setTimeout(() => {
+          setFormStatus(prev => prev.type === 'success' ? { type: null, message: '' } : prev);
+        }, 3000);
         localStorage.setItem('form_last_submission', Date.now().toString());
         setAlias('');
         setEmail('');
@@ -1176,15 +1180,54 @@ export default function App() {
                   />
                 </div>
 
-                {formStatus.type && (
-                  <div className={`p-4 rounded-xl text-xs font-mono border ${
-                    formStatus.type === 'success' 
-                      ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400' 
-                      : 'border-rose-500/30 bg-rose-500/10 text-rose-400'
-                  }`}>
-                    [{formStatus.type.toUpperCase()}] {formStatus.message}
-                  </div>
-                )}
+                <AnimatePresence>
+                  {formStatus.type && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 15, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                      className={`relative p-5 border text-xs font-mono select-none flex flex-col gap-3 rounded-2xl bg-[#0f0f11] transition-all ${
+                        formStatus.type === 'success' 
+                          ? 'border-emerald-500/20 text-emerald-300 shadow-[6px_6px_15px_rgba(0,0,0,0.7),_-6px_-6px_15px_rgba(16,185,129,0.08)]' 
+                          : 'border-rose-500/20 text-rose-300 shadow-[6px_6px_15px_rgba(0,0,0,0.7),_-6px_-6px_15px_rgba(244,63,94,0.08)]'
+                      }`}
+                    >
+                      {/* Top bar with metadata */}
+                      <div className="flex items-center justify-between border-b border-white/5 pb-2">
+                        <div className="flex items-center gap-2">
+                          <span className={`w-2 h-2 rounded-full animate-ping ${
+                            formStatus.type === 'success' ? 'bg-emerald-500' : 'bg-rose-500'
+                          }`} />
+                          <span className="font-extrabold uppercase tracking-widest text-[9px] text-white">
+                            [{formStatus.type.toUpperCase()}]
+                          </span>
+                        </div>
+                        <span className="text-[9px] text-neutral-500">
+                          {formStatus.type === 'success' ? 'STATUS: 200_OK' : 'STATUS: ERROR_FLAG'}
+                        </span>
+                      </div>
+
+                      {/* Content block */}
+                      <div className="flex items-start gap-3">
+                        <div className="shrink-0 mt-0.5">
+                          {formStatus.type === 'success' ? (
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-emerald-400">
+                              <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.74-5.24Z" clipRule="evenodd" />
+                            </svg>
+                          ) : (
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-rose-400">
+                              <path fillRule="evenodd" d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.401 3.003ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clipRule="evenodd" />
+                            </svg>
+                          )}
+                        </div>
+                        <p className="text-[11px] font-bold text-white leading-relaxed">
+                          {formStatus.message}
+                        </p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
                 <button
                   type="submit"
