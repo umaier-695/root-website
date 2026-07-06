@@ -85,10 +85,10 @@ export default function HomeNode({ onNavigate }: HomeNodeProps) {
       </div>
 
       {/* Bento Grid Layout */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         
         {/* Core Profile Card (Large Glassmorphism) */}
-        <GlowCard className="sm:col-span-2 md:col-span-2 bg-neutral-900/40 border border-white/5 backdrop-blur-md p-6 sm:p-8 rounded-3xl shadow-xl">
+        <GlowCard className="sm:col-span-2 lg:col-span-2 bg-neutral-900/40 border border-white/5 backdrop-blur-md p-6 sm:p-8 rounded-3xl shadow-xl">
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-white animate-pulse" />
@@ -188,8 +188,46 @@ export default function HomeNode({ onNavigate }: HomeNodeProps) {
           </div>
         </GlowCard>
 
+        {/* Edge Computing Bento Link */}
+        <GlowCard
+          onClick={() => onNavigate('iot')}
+          className="bg-neutral-900/40 border border-white/5 backdrop-blur-md p-8 rounded-3xl shadow-xl cursor-pointer"
+        >
+          <div className="space-y-4">
+            <span className="text-xs font-mono text-neutral-500 uppercase tracking-widest block">// decentralized edge mesh</span>
+            <h3 className="text-xl font-medium font-readex text-white group-hover:text-white transition-colors">edge computing</h3>
+            <p className="text-xs text-neutral-400 leading-relaxed font-light">
+              developing firmware for low-power microcontrollers (ESP8266, ESP32) and engineering private RF mesh networks.
+            </p>
+          </div>
+          
+          <div className="mt-6 flex items-center gap-1.5 text-xs font-mono text-neutral-400 group-hover:text-white transition-colors">
+            <span>access network</span>
+            <span className="transform group-hover:translate-x-1 transition-transform">&rarr;</span>
+          </div>
+        </GlowCard>
+
+        {/* Web Development Bento Link */}
+        <GlowCard
+          onClick={() => onNavigate('web')}
+          className="bg-neutral-900/40 border border-white/5 backdrop-blur-md p-8 rounded-3xl shadow-xl cursor-pointer sm:col-span-2 lg:col-span-2"
+        >
+          <div className="space-y-4">
+            <span className="text-xs font-mono text-neutral-500 uppercase tracking-widest block">// full-stack applications</span>
+            <h3 className="text-xl font-medium font-readex text-white group-hover:text-white transition-colors">web development</h3>
+            <p className="text-xs text-neutral-400 leading-relaxed font-light">
+              developing client-facing web portals, interactive dashboards, and high-performance applications with React, Next.js, and solid API services.
+            </p>
+          </div>
+          
+          <div className="mt-6 flex items-center gap-1.5 text-xs font-mono text-neutral-400 group-hover:text-white transition-colors">
+            <span>access console</span>
+            <span className="transform group-hover:translate-x-1 transition-transform">&rarr;</span>
+          </div>
+        </GlowCard>
+
         {/* Verified Credentials Matrix - Full-Width Bento Card */}
-        <GlowCard className="bg-neutral-900/40 border border-white/5 backdrop-blur-md p-6 sm:p-8 rounded-3xl shadow-xl sm:col-span-2 md:col-span-3">
+        <GlowCard className="bg-neutral-900/40 border border-white/5 backdrop-blur-md p-6 sm:p-8 rounded-3xl shadow-xl sm:col-span-2 lg:col-span-3">
           <div className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/5 pb-4">
               <div>
@@ -210,7 +248,7 @@ export default function HomeNode({ onNavigate }: HomeNodeProps) {
             </p>
 
             {/* Grid of badges */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {credentials.map((badge, index) => (
                 <div key={index} className="bg-neutral-950/50 border border-white/5 rounded-xl p-4 space-y-2 hover:border-white/10 transition-all">
                   <div className="flex items-center gap-2">

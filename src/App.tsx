@@ -11,7 +11,7 @@ type PageType = 'home' | 'security' | 'ai' | 'iot' | 'cloud' | 'web';
 
 function MeshBackground({ currentPage }: { currentPage: PageType }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const isRenderMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const isRenderMobile = typeof window !== 'undefined' && window.innerWidth < 1024;
 
   // Store currentPage in a ref so the requestAnimationFrame draw loop can read it on every frame
   // without tearing down the canvas context and event listeners on page changes.
@@ -30,10 +30,10 @@ function MeshBackground({ currentPage }: { currentPage: PageType }) {
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
-    const isMobile = width < 768;
-    const cols = isMobile ? 14 : 22;
-    const rows = isMobile ? 14 : 22;
-    const spacing = isMobile ? 40 : 45;
+    const cols = width < 640 ? 14 : width < 1024 ? 18 : 22;
+    const rows = width < 640 ? 14 : width < 1024 ? 18 : 22;
+    const spacing = width < 640 ? 40 : width < 1024 ? 42 : 45;
+    const isMobile = width < 1024;
 
     let rotX = 1.0; // Initial tilt angle (looking down at terrain)
     let rotY = 0.0; // Initial rotation angle
@@ -343,7 +343,7 @@ function MeshBackground({ currentPage }: { currentPage: PageType }) {
 }
 
 function InteractiveLetter({ char, active, isParagraph = false }: { char: string; active: boolean; isParagraph?: boolean }) {
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024;
 
   // Pre-calculate animation values
   const hoverScaleY = isParagraph ? (isMobile ? 1.08 : 1.15) : (isMobile ? 1.15 : 1.28);
@@ -496,7 +496,7 @@ export default function App() {
   const [botCheck, setBotCheck] = useState(false);
   const [navVisible, setNavVisible] = useState(true);
   const lastScrollY = useRef(0);
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024;
 
   const navigate = (page: PageType) => {
     setCurrentPage(page);
@@ -685,7 +685,6 @@ export default function App() {
           <span className="text-white text-sm font-normal tracking-tight font-readex">ROOT</span>
         </div>
 
-        {/* Center Pill (Desktop Nav Links — hidden on mobile) */}
         <motion.div
           animate={!isMobile ? {
             clipPath: navVisible 
@@ -699,24 +698,24 @@ export default function App() {
             scale: 1,
           }}
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="hidden md:flex items-center gap-1 bg-neutral-900/90 backdrop-blur rounded-full px-3 py-2 border border-white/5 shadow-lg shadow-black/50"
+          className="hidden lg:flex items-center gap-0.5 xl:gap-1 bg-neutral-900/90 backdrop-blur rounded-full px-2 xl:px-3 py-1.5 xl:py-2 border border-white/5 shadow-lg shadow-black/50"
         >
           {(['home', 'security', 'ai', 'iot', 'cloud', 'web'] as const).map((page) => (
             <button
               key={page}
               onClick={() => navigate(page)}
-              className={`text-sm px-5 py-2 rounded-full transition-all font-mono tracking-wider text-xs whitespace-nowrap ${
+              className={`px-3 xl:px-5 py-1.5 xl:py-2 rounded-full transition-all font-mono tracking-wider text-[10px] xl:text-xs whitespace-nowrap ${
                 currentPage === page
                   ? 'bg-white text-black font-semibold'
                   : 'text-neutral-300 hover:text-white'
               }`}
             >
               {page === 'home' && <InteractiveWord word="overview" active={currentPage === 'home'} />}
-              {page === 'security' && <InteractiveWord word="cybersecurity" active={currentPage === 'security'} />}
-              {page === 'ai' && <InteractiveWord word="applied intelligence" active={currentPage === 'ai'} />}
-              {page === 'iot' && <InteractiveWord word="edge computing" active={currentPage === 'iot'} />}
-              {page === 'cloud' && <InteractiveWord word="cloud infrastructure" active={currentPage === 'cloud'} />}
-              {page === 'web' && <InteractiveWord word="web development" active={currentPage === 'web'} />}
+              {page === 'security' && <InteractiveWord word="security" active={currentPage === 'security'} />}
+              {page === 'ai' && <InteractiveWord word="ai" active={currentPage === 'ai'} />}
+              {page === 'iot' && <InteractiveWord word="iot" active={currentPage === 'iot'} />}
+              {page === 'cloud' && <InteractiveWord word="cloud" active={currentPage === 'cloud'} />}
+              {page === 'web' && <InteractiveWord word="web" active={currentPage === 'web'} />}
             </button>
           ))}
         </motion.div>
@@ -727,7 +726,7 @@ export default function App() {
           <a
             href="#contact"
             onClick={() => setCurrentPage('home')}
-            className="hidden md:inline-flex bg-white text-black text-xs font-mono font-bold uppercase border-2 border-black px-6 py-3 transition-all shadow-[4px_4px_0px_rgba(255,255,255,0.8)] hover:shadow-[6px_6px_0px_rgba(255,255,255,1)] hover:bg-neutral-100 active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_rgba(255,255,255,0.8)]"
+            className="hidden lg:inline-flex bg-white text-black text-xs font-mono font-bold uppercase border-2 border-black px-6 py-3 transition-all shadow-[4px_4px_0px_rgba(255,255,255,0.8)] hover:shadow-[6px_6px_0px_rgba(255,255,255,1)] hover:bg-neutral-100 active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_rgba(255,255,255,0.8)]"
           >
             <InteractiveWord word="contact" active={true} />
           </a>
@@ -736,7 +735,7 @@ export default function App() {
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label="Toggle navigation menu"
-            className="md:hidden flex flex-col justify-center items-center w-10 h-10 gap-[5px] bg-neutral-900/90 backdrop-blur rounded-full border border-white/10 shadow-lg shadow-black/50 cursor-pointer hover:border-white/20 transition-colors"
+            className="lg:hidden flex flex-col justify-center items-center w-10 h-10 gap-[5px] bg-neutral-900/90 backdrop-blur rounded-full border border-white/10 shadow-lg shadow-black/50 cursor-pointer hover:border-white/20 transition-colors"
           >
             <span
               style={{ transform: menuOpen ? 'translateY(8px) rotate(45deg)' : 'none', transition: 'transform 0.25s ease' }}
@@ -756,7 +755,7 @@ export default function App() {
 
       {/* Mobile slide-down menu overlay */}
       <div
-        className={`fixed inset-0 z-40 md:hidden transition-all duration-300 ease-in-out ${
+        className={`fixed inset-0 z-40 lg:hidden transition-all duration-300 ease-in-out ${
           menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
         style={{ transform: menuOpen ? 'translateY(0)' : 'translateY(-8px)' }}
@@ -1074,8 +1073,8 @@ export default function App() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-12 items-start">
-            <div className="md:col-span-2 space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12 items-start">
+            <div className="lg:col-span-2 space-y-6">
               <div>
                 <h3 className="text-base font-medium text-white mb-2">
                   <InteractiveWord word="contact details" />
@@ -1129,7 +1128,7 @@ export default function App() {
               </div>
             </div>
 
-            <div className="md:col-span-3 bg-neutral-950/70 border border-white/5 p-6 rounded-2xl shadow-xl shadow-black">
+            <div className="lg:col-span-3 bg-neutral-950/70 border border-white/5 p-6 rounded-2xl shadow-xl shadow-black">
               <form onSubmit={handleFormSubmit} className="space-y-5">
                 {/* Honeypot Spam Protection Field */}
                 <input
@@ -1299,7 +1298,7 @@ export default function App() {
         }}
         animate={navVisible ? { y: 0, scale: 1, opacity: 1 } : { y: 80, scale: 0.8, opacity: 0 }}
         transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-        className="md:hidden fixed bottom-6 right-6 z-40 flex items-center justify-center gap-2 bg-white text-black font-mono font-bold text-xs uppercase border-2 border-black px-5 py-3.5 shadow-[4px_4px_0px_rgba(255,255,255,0.85)] hover:shadow-[6px_6px_0px_rgba(255,255,255,1)] hover:bg-neutral-100 active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_rgba(255,255,255,0.85)] transition-all"
+        className="lg:hidden fixed bottom-6 right-6 z-40 flex items-center justify-center gap-2 bg-white text-black font-mono font-bold text-xs uppercase border-2 border-black px-5 py-3.5 shadow-[4px_4px_0px_rgba(255,255,255,0.85)] hover:shadow-[6px_6px_0px_rgba(255,255,255,1)] hover:bg-neutral-100 active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_rgba(255,255,255,0.85)] transition-all"
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
         <InteractiveWord word="contact" active={true} className="text-xs font-mono tracking-wider uppercase" />

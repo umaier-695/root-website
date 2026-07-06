@@ -60,10 +60,10 @@ export default function WebNode() {
         </div>
 
         {/* Bento Grid Layout */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-4 sm:gap-6 font-mono text-white">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 sm:gap-6 font-mono text-white">
           
-          {/* Card 1: Frontend (md:col-span-3) */}
-          <SpatialGlassCard className="sm:col-span-1 md:col-span-3 h-auto min-h-[280px] sm:min-h-[320px] flex flex-col justify-between">
+          {/* Card 1: Frontend (lg:col-span-3) */}
+          <SpatialGlassCard className="sm:col-span-1 lg:col-span-3 h-auto min-h-[280px] sm:min-h-[320px] flex flex-col justify-between">
             <div className="space-y-4">
               <span className="text-[9px] text-purple-400 uppercase tracking-widest block">// client-side architect</span>
               <h3 className="text-lg font-bold font-readex uppercase text-white leading-none">frontend engineering</h3>
@@ -88,8 +88,8 @@ export default function WebNode() {
             </div>
           </SpatialGlassCard>
 
-          {/* Card 2: Backend (md:col-span-3) */}
-          <SpatialGlassCard className="sm:col-span-1 md:col-span-3 h-auto min-h-[280px] sm:min-h-[320px] flex flex-col justify-between">
+          {/* Card 2: Backend (lg:col-span-3) */}
+          <SpatialGlassCard className="sm:col-span-1 lg:col-span-3 h-auto min-h-[280px] sm:min-h-[320px] flex flex-col justify-between">
             <div className="space-y-4">
               <span className="text-[9px] text-purple-400 uppercase tracking-widest block">// server-side operations</span>
               <h3 className="text-lg font-bold font-readex uppercase text-white leading-none">backend & systems</h3>
@@ -114,8 +114,8 @@ export default function WebNode() {
             </div>
           </SpatialGlassCard>
 
-          {/* Card 3: Optimization & CDNs (md:col-span-4) */}
-          <SpatialGlassCard className="sm:col-span-2 md:col-span-4 h-auto min-h-[180px] sm:min-h-[220px] flex flex-col justify-between">
+          {/* Card 3: Optimization & CDNs (lg:col-span-4) */}
+          <SpatialGlassCard className="sm:col-span-2 lg:col-span-4 h-auto min-h-[180px] sm:min-h-[220px] flex flex-col justify-between">
             <div className="space-y-3">
               <span className="text-[9px] text-purple-400 uppercase tracking-widest block">// performance & routing</span>
               <h3 className="text-lg font-bold font-readex uppercase text-white leading-none">deployment & seo optimization</h3>
@@ -129,8 +129,8 @@ export default function WebNode() {
             </div>
           </SpatialGlassCard>
 
-          {/* Card 4: Stats (md:col-span-2) */}
-          <SpatialGlassCard className="sm:col-span-2 md:col-span-2 h-auto min-h-[180px] sm:min-h-[220px] flex flex-col justify-between">
+          {/* Card 4: Stats (lg:col-span-2) */}
+          <SpatialGlassCard className="sm:col-span-2 lg:col-span-2 h-auto min-h-[180px] sm:min-h-[220px] flex flex-col justify-between">
             <div className="space-y-3">
               <span className="text-[9px] text-neutral-500 uppercase tracking-widest block">// tech stack indicators</span>
               <h3 className="text-sm font-bold font-readex uppercase text-white leading-none">development specs</h3>

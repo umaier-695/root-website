@@ -184,7 +184,7 @@ export default function SecurityNode() {
       </div>
 
       {/* Grid displaying the Spatial UI tilt cards (using Brutalism design: flat white cards, thick black border, harsh contrast) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 pt-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 pt-4">
         <SpatialCard
           category="assessment"
           title="penetration testing"

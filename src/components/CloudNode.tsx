@@ -63,10 +63,10 @@ export default function CloudNode() {
         </div>
 
         {/* Minimalist Brutalist Bento Grid Layout */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-4 sm:gap-6 items-start font-mono">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 sm:gap-6 items-start font-mono">
           
-          {/* Card 1: GKE Workloads Container (md:col-span-3) */}
-          <BrutalistCard className="sm:col-span-1 md:col-span-3 h-auto min-h-[220px] sm:min-h-[280px]" shadowColor="#18f700">
+          {/* Card 1: GKE Workloads Container (lg:col-span-3) */}
+          <BrutalistCard className="sm:col-span-1 lg:col-span-3 h-auto min-h-[220px] sm:min-h-[280px]" shadowColor="#18f700">
             <div className="space-y-2">
               <span className="text-[10px] uppercase font-bold tracking-wider block bg-black text-white px-2 py-0.5 w-fit">
                 orchestration
@@ -90,8 +90,8 @@ export default function CloudNode() {
             </div>
           </BrutalistCard>
 
-          {/* Card 2: VPC Network Rules (md:col-span-3) */}
-          <BrutalistCard className="sm:col-span-1 md:col-span-3 h-auto min-h-[220px] sm:min-h-[280px]" shadowColor="#ffffff">
+          {/* Card 2: VPC Network Rules (lg:col-span-3) */}
+          <BrutalistCard className="sm:col-span-1 lg:col-span-3 h-auto min-h-[220px] sm:min-h-[280px]" shadowColor="#ffffff">
             <div className="space-y-2">
               <span className="text-[10px] uppercase font-bold tracking-wider block bg-black text-white px-2 py-0.5 w-fit">
                 networking
@@ -115,8 +115,8 @@ export default function CloudNode() {
             </div>
           </BrutalistCard>
 
-          {/* Card 3: Cloud Badges & Credentials (md:col-span-6) */}
-          <BrutalistCard className="sm:col-span-2 md:col-span-6 h-auto min-h-[200px]" shadowColor="#18f700">
+          {/* Card 3: Cloud Badges & Credentials (lg:col-span-6) */}
+          <BrutalistCard className="sm:col-span-2 lg:col-span-6 h-auto min-h-[200px]" shadowColor="#18f700">
             <div className="space-y-2">
               <span className="text-[10px] uppercase font-bold tracking-wider block bg-black text-white px-2 py-0.5 w-fit">
                 credentials

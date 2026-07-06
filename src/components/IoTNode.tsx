@@ -61,10 +61,10 @@ export default function IoTNode() {
         </div>
 
         {/* Minimalist Bento Grid Layout (Spatial UI, No interactive levers) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-4 sm:gap-6 font-mono text-white">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 sm:gap-6 font-mono text-white">
           
-          {/* Card 1: Microcontrollers Deployed (md:col-span-3) */}
-          <SpatialPanel className="sm:col-span-1 md:col-span-3 h-auto min-h-[280px] sm:min-h-[320px] flex flex-col justify-between">
+          {/* Card 1: Microcontrollers Deployed (lg:col-span-3) */}
+          <SpatialPanel className="sm:col-span-1 lg:col-span-3 h-auto min-h-[280px] sm:min-h-[320px] flex flex-col justify-between">
             <div className="space-y-4">
               <span className="text-[9px] text-neutral-500 uppercase tracking-widest block">
                 // firmware development
@@ -88,8 +88,8 @@ export default function IoTNode() {
             </div>
           </SpatialPanel>
 
-          {/* Card 2: Edge Gateways (md:col-span-3) */}
-          <SpatialPanel className="sm:col-span-1 md:col-span-3 h-auto min-h-[280px] sm:min-h-[320px] flex flex-col justify-between">
+          {/* Card 2: Edge Gateways (lg:col-span-3) */}
+          <SpatialPanel className="sm:col-span-1 lg:col-span-3 h-auto min-h-[280px] sm:min-h-[320px] flex flex-col justify-between">
             <div className="space-y-4">
               <span className="text-[9px] text-neutral-500 uppercase tracking-widest block">
                 // local servers
@@ -113,8 +113,8 @@ export default function IoTNode() {
             </div>
           </SpatialPanel>
 
-          {/* Card 3: Mesh Topologies (md:col-span-4) */}
-          <SpatialPanel className="sm:col-span-2 md:col-span-4 h-auto min-h-[180px] sm:min-h-[220px] flex flex-col justify-between">
+          {/* Card 3: Mesh Topologies (lg:col-span-4) */}
+          <SpatialPanel className="sm:col-span-2 lg:col-span-4 h-auto min-h-[180px] sm:min-h-[220px] flex flex-col justify-between">
             <div className="space-y-3">
               <span className="text-[9px] text-neutral-500 uppercase tracking-widest block">
                 // mesh networks
@@ -132,8 +132,8 @@ export default function IoTNode() {
             </div>
           </SpatialPanel>
 
-          {/* Card 4: Antennas & RF Bands (md:col-span-2) */}
-          <SpatialPanel className="sm:col-span-2 md:col-span-2 h-auto min-h-[180px] sm:min-h-[220px] flex flex-col justify-between">
+          {/* Card 4: Antennas & RF Bands (lg:col-span-2) */}
+          <SpatialPanel className="sm:col-span-2 lg:col-span-2 h-auto min-h-[180px] sm:min-h-[220px] flex flex-col justify-between">
             <div className="space-y-3">
               <span className="text-[9px] text-neutral-500 uppercase tracking-widest block">
                 // radio frequency
