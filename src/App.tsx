@@ -10,6 +10,7 @@ type PageType = 'home' | 'security' | 'ai' | 'iot' | 'cloud';
 
 function MeshBackground({ currentPage }: { currentPage: PageType }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const isRenderMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -22,9 +23,9 @@ function MeshBackground({ currentPage }: { currentPage: PageType }) {
     let height = (canvas.height = window.innerHeight);
 
     const isMobile = width < 768;
-    const cols = isMobile ? 12 : 22;
-    const rows = isMobile ? 12 : 22;
-    const spacing = isMobile ? 32 : 45;
+    const cols = isMobile ? 16 : 22;
+    const rows = isMobile ? 18 : 22;
+    const spacing = isMobile ? 36 : 45;
 
     let rotX = 1.0; // Initial tilt angle (looking down at terrain)
     let rotY = 0.0; // Initial rotation angle
@@ -77,7 +78,7 @@ function MeshBackground({ currentPage }: { currentPage: PageType }) {
       // Camera configurations
       const focalLength = 380;
       const cameraDistance = 450;
-      const yOffset = height * 0.15; // Shift terrain down slightly
+      const yOffset = isMobile ? height * 0.05 : height * 0.15; // Shift terrain higher on mobile to prevent occlusion
 
       // Smoothly interpolate rotation angles
       rotY += 0.001 + (targetRotY - rotY) * 0.05;
@@ -226,8 +227,8 @@ function MeshBackground({ currentPage }: { currentPage: PageType }) {
   return (
     <canvas
       ref={canvasRef}
-      className={`fixed inset-0 w-full h-full z-0 pointer-events-none bg-black transition-all duration-700 ${
-        currentPage === 'home' ? 'blur-none' : 'blur-[1.5px]'
+      className={`fixed inset-0 w-full h-full -z-10 pointer-events-none transition-all duration-700 ${
+        !isRenderMobile && currentPage !== 'home' ? 'blur-[1.5px]' : 'blur-none'
       }`}
     />
   );
@@ -522,7 +523,7 @@ export default function App() {
   };
 
   return (
-    <div className="relative min-h-screen w-full bg-black text-white selection:bg-neutral-800 selection:text-white overflow-x-hidden">
+    <div className="relative min-h-screen w-full text-white selection:bg-neutral-800 selection:text-white overflow-x-hidden">
       {/* Background Mesh Network Canvas */}
       <MeshBackground currentPage={currentPage} />
 
