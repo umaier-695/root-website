@@ -12,6 +12,13 @@ function MeshBackground({ currentPage }: { currentPage: PageType }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const isRenderMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 
+  // Store currentPage in a ref so the requestAnimationFrame draw loop can read it on every frame
+  // without tearing down the canvas context and event listeners on page changes.
+  const currentPageRef = useRef(currentPage);
+  useEffect(() => {
+    currentPageRef.current = currentPage;
+  }, [currentPage]);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -85,16 +92,17 @@ function MeshBackground({ currentPage }: { currentPage: PageType }) {
     const draw = () => {
       ctx.clearRect(0, 0, width, height);
 
-      const isHome = currentPage === 'home';
+      const activePage = currentPageRef.current;
+      const isHome = activePage === 'home';
       const baseOpacity = isHome ? 0.25 : 0.12; // Slightly higher base opacity for clear visibility
       const time = Date.now() * 0.0012;
 
       // Theme-based colors for grid lines
       let themeColor = '255, 255, 255'; // default: cyber white
-      if (currentPage === 'security') themeColor = '16, 185, 129'; // emerald green
-      if (currentPage === 'ai') themeColor = '99, 102, 241'; // deep indigo
-      if (currentPage === 'iot') themeColor = '245, 158, 11'; // amber/orange
-      if (currentPage === 'cloud') themeColor = '6, 182, 212'; // sky cyan
+      if (activePage === 'security') themeColor = '16, 185, 129'; // emerald green
+      if (activePage === 'ai') themeColor = '99, 102, 241'; // deep indigo
+      if (activePage === 'iot') themeColor = '245, 158, 11'; // amber/orange
+      if (activePage === 'cloud') themeColor = '6, 182, 212'; // sky cyan
 
       // Camera configurations
       const focalLength = 380;
@@ -216,10 +224,11 @@ function MeshBackground({ currentPage }: { currentPage: PageType }) {
           
           const dx = p.x - clientX;
           const dy = p.y - clientY;
-          const dist = Math.sqrt(dx * dx + dy * dy);
+          const distSq = dx * dx + dy * dy;
 
           ctx.beginPath();
-          if (dist < 150) {
+          if (distSq < 22500) { // 150 * 150 (Optimized using Squared Distance)
+            const dist = Math.sqrt(distSq);
             const glowFactor = (150 - dist) / 150;
             const size = (1.0 + zDepthFade * 1.2) * (1 + glowFactor * 1.8);
             const alpha = dotOpacity * zDepthFade * (1 + glowFactor * 2.5);
@@ -249,7 +258,7 @@ function MeshBackground({ currentPage }: { currentPage: PageType }) {
       window.removeEventListener('resize', handleResize);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [currentPage]);
+  }, []);
 
   return (
     <canvas
