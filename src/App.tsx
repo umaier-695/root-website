@@ -702,7 +702,9 @@ export default function App() {
                 <div className="text-left">
                   <div className={`text-xs font-mono tracking-widest font-semibold ${
                     currentPage === page ? 'text-black' : 'text-white'
-                  }`}>{label}</div>
+                  }`}>
+                    <InteractiveWord word={label} active={currentPage === page} />
+                  </div>
                   <div className={`text-[10px] mt-0.5 ${
                     currentPage === page ? 'text-black/60' : 'text-neutral-500'
                   }`}>{sub}</div>
@@ -725,7 +727,7 @@ export default function App() {
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-3.5 h-3.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 1 1.242 7.244" />
               </svg>
-              contact me
+              <InteractiveWord word="contact me" active={true} />
             </a>
           </div>
         </div>
@@ -1000,6 +1002,14 @@ export default function App() {
                     <InteractiveWord word="credly:" /> <a href="https://www.credly.com/users/umaier-javid" target="_blank" rel="noopener noreferrer" className="text-white hover:underline"><InteractiveWord word="credly.com/users/umaier-javid" /></a>
                   </span>
                 </div>
+                <div className="flex items-center gap-3">
+                  <span className="shrink-0 text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                  </span>
+                  <span>
+                    <InteractiveWord word="fiverr:" /> <a href="https://www.fiverr.com/s/gDA5jgb" target="_blank" rel="noopener noreferrer" className="text-white hover:underline"><InteractiveWord word="fiverr.com/s/gDA5jgb" /></a>
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -1137,7 +1147,7 @@ export default function App() {
         className="md:hidden fixed bottom-6 right-6 z-40 flex items-center justify-center gap-2 bg-white text-black font-semibold rounded-full px-5 py-3 shadow-2xl shadow-black border border-white/20 active:scale-95 transition-transform"
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-        <span className="text-xs font-mono tracking-wider uppercase">contact</span>
+        <InteractiveWord word="contact" active={true} className="text-xs font-mono tracking-wider uppercase" />
       </motion.a>
 
       {/* Mobile bottom pill nav removed — hamburger menu used instead */}
