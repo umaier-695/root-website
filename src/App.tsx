@@ -1117,6 +1117,26 @@ export default function App() {
         </div>
       </footer>
 
+      {/* Mobile Floating Contact Action Button */}
+      <motion.a
+        href="#contact"
+        onClick={(e) => {
+          e.preventDefault();
+          setCurrentPage('home');
+          setMenuOpen(false);
+          const target = document.getElementById('contact');
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+          }
+        }}
+        animate={navVisible ? { y: 0, scale: 1, opacity: 1 } : { y: 80, scale: 0.8, opacity: 0 }}
+        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+        className="md:hidden fixed bottom-6 right-6 z-40 flex items-center justify-center gap-2 bg-white text-black font-semibold rounded-full px-5 py-3 shadow-2xl shadow-black border border-white/20 active:scale-95 transition-transform"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        <span className="text-xs font-mono tracking-wider uppercase">contact</span>
+      </motion.a>
+
       {/* Mobile bottom pill nav removed — hamburger menu used instead */}
     </div>
   );
