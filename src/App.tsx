@@ -271,42 +271,46 @@ function MeshBackground({ currentPage }: { currentPage: PageType }) {
 }
 
 function InteractiveLetter({ char, active, isParagraph = false }: { char: string; active: boolean; isParagraph?: boolean }) {
-  const [isHovered, setIsHovered] = useState(false);
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+
+  // Pre-calculate animation values
+  const hoverScaleY = isParagraph ? (isMobile ? 1.08 : 1.15) : (isMobile ? 1.15 : 1.28);
+  const hoverScaleX = isParagraph ? (isMobile ? 1.04 : 1.08) : (isMobile ? 1.08 : 1.15);
+  const hoverY = isParagraph ? (isMobile ? -2 : -4) : (isMobile ? -3 : -8);
+
+  const echoX = isParagraph ? (isMobile ? 1 : 2) : (isMobile ? 2 : 4);
+  const echoY = isParagraph ? (isMobile ? -0.8 : -1.5) : (isMobile ? -1.5 : -3.5);
+  const echoScaleY = isParagraph ? (isMobile ? 1.05 : 1.12) : (isMobile ? 1.1 : 1.2);
+  const echoScaleX = isParagraph ? (isMobile ? 1.02 : 1.05) : (isMobile ? 1.05 : 1.1);
 
   return (
     <motion.span
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onTouchStart={() => setIsHovered(true)}
-      onTouchEnd={() => {
-        setTimeout(() => setIsHovered(false), 250);
-      }}
       className="relative inline-block cursor-default select-none"
       style={{ originX: 0.5, originY: 0.5 }}
+      initial="initial"
+      whileHover="hover"
+      whileTap="hover"
     >
       {/* Ghost Depth Echo */}
-      <motion.span
-        className="absolute inset-0 text-white/20 pointer-events-none"
-        animate={isHovered && char !== ' ' && char !== '\u00A0' ? {
-          x: isParagraph ? (isMobile ? 1 : 2) : (isMobile ? 2 : 4),
-          y: isParagraph ? (isMobile ? -0.8 : -1.5) : (isMobile ? -1.5 : -3.5),
-          scaleY: isParagraph ? (isMobile ? 1.05 : 1.12) : (isMobile ? 1.1 : 1.2),
-          scaleX: isParagraph ? (isMobile ? 1.02 : 1.05) : (isMobile ? 1.05 : 1.1),
-          opacity: 0.35,
-          filter: isMobile ? 'none' : 'blur(1.5px)'
-        } : {
-          x: 0,
-          y: 0,
-          scaleY: 1,
-          scaleX: 1,
-          opacity: 0,
-          filter: 'blur(0px)'
-        }}
-        transition={{ type: 'spring', stiffness: 400, damping: 14 }}
-      >
-        {char}
-      </motion.span>
+      {char !== ' ' && char !== '\u00A0' && (
+        <motion.span
+          className="absolute inset-0 text-white/20 pointer-events-none"
+          variants={{
+            initial: { x: 0, y: 0, scaleY: 1, scaleX: 1, opacity: 0, filter: 'blur(0px)' },
+            hover: {
+              x: echoX,
+              y: echoY,
+              scaleY: echoScaleY,
+              scaleX: echoScaleX,
+              opacity: 0.35,
+              filter: isMobile ? 'none' : 'blur(1.5px)',
+              transition: { type: 'spring', stiffness: 400, damping: 14 }
+            }
+          }}
+        >
+          {char}
+        </motion.span>
+      )}
 
       {/* Main Letter */}
       <motion.span
@@ -315,16 +319,15 @@ function InteractiveLetter({ char, active, isParagraph = false }: { char: string
             ? 'text-black hover:drop-shadow-[0_0_8px_rgba(0,0,0,0.3)]' 
             : 'text-inherit hover:text-white hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.75)]'
         }`}
-        animate={isHovered ? {
-          scaleY: isParagraph ? (isMobile ? 1.08 : 1.15) : (isMobile ? 1.15 : 1.28), 
-          scaleX: isParagraph ? (isMobile ? 1.04 : 1.08) : (isMobile ? 1.08 : 1.15),
-          y: isParagraph ? (isMobile ? -2 : -4) : (isMobile ? -3 : -8),
-        } : {
-          scaleY: 1,
-          scaleX: 1,
-          y: 0
+        variants={{
+          initial: { scaleY: 1, scaleX: 1, y: 0 },
+          hover: {
+            scaleY: hoverScaleY,
+            scaleX: hoverScaleX,
+            y: hoverY,
+            transition: { type: 'spring', stiffness: 400, damping: 14 }
+          }
         }}
-        transition={{ type: 'spring', stiffness: 400, damping: 14 }}
       >
         {char === ' ' ? '\u00A0' : char}
       </motion.span>
