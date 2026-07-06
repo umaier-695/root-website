@@ -25,24 +25,7 @@
   </head>
   <body>
     <div id="root">
-      <!-- Minimalist Cyber Loading Screen (Prevents FOUC on fast refreshes / mobile loads) -->
-      <div id="loader" style="position: fixed; inset: 0; background: #000000; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; font-family: monospace; color: #ffffff; select-none: none;">
-        <div style="font-size: 11px; letter-spacing: 0.35em; text-transform: uppercase; margin-bottom: 24px; animation: pulse 1.6s infinite; color: rgba(255,255,255,0.75);">booting system...</div>
-        <div style="width: 140px; height: 1px; background: rgba(255,255,255,0.08); position: relative; overflow: hidden; border-radius: 9px;">
-          <div style="position: absolute; top: 0; left: 0; height: 100%; width: 45px; background: #ffffff; box-shadow: 0 0 8px #ffffff; animation: loading 1.6s infinite ease-in-out;"></div>
-        </div>
-      </div>
 
-      <style>
-        @keyframes pulse {
-          0%, 100% { opacity: 0.35; }
-          50% { opacity: 0.95; }
-        }
-        @keyframes loading {
-          0% { left: -45px; }
-          100% { left: 140px; }
-        }
-      </style>
 
       <!-- SEO & AI Crawler Fallback Content (Visible to scrapers/bots, hidden from humans, wiped by React hydration) -->
       <div style="display: none;" aria-hidden="true">
