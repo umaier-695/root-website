@@ -226,6 +226,25 @@ export default function HomeNode({ onNavigate }: HomeNodeProps) {
           </div>
         </GlowCard>
 
+        {/* Reviews Bento Link */}
+        <GlowCard
+          onClick={() => onNavigate('reviews')}
+          className="bg-neutral-900/40 border border-white/5 backdrop-blur-md p-8 rounded-3xl shadow-xl cursor-pointer sm:col-span-2 lg:col-span-3"
+        >
+          <div className="space-y-4">
+            <span className="text-xs font-mono text-neutral-500 uppercase tracking-widest block">// client feedback board</span>
+            <h3 className="text-xl font-medium font-readex text-white group-hover:text-white transition-colors">client reviews & testimonials</h3>
+            <p className="text-xs text-neutral-400 leading-relaxed font-light">
+              read verified testimonials from tech leads, developers, and project owners. write and submit your own client review directly.
+            </p>
+          </div>
+          
+          <div className="mt-6 flex items-center gap-1.5 text-xs font-mono text-neutral-400 group-hover:text-white transition-colors">
+            <span>access reviews board</span>
+            <span className="transform group-hover:translate-x-1 transition-transform">&rarr;</span>
+          </div>
+        </GlowCard>
+
         {/* Verified Credentials Matrix - Full-Width Bento Card */}
         <GlowCard className="bg-neutral-900/40 border border-white/5 backdrop-blur-md p-6 sm:p-8 rounded-3xl shadow-xl sm:col-span-2 lg:col-span-3">
           <div className="space-y-6">

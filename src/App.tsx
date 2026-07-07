@@ -6,8 +6,9 @@ import AINode from './components/AINode';
 import IoTNode from './components/IoTNode';
 import CloudNode from './components/CloudNode';
 import WebNode from './components/WebNode';
+import ReviewsNode from './components/ReviewsNode';
 
-type PageType = 'home' | 'security' | 'ai' | 'iot' | 'cloud' | 'web';
+type PageType = 'home' | 'security' | 'ai' | 'iot' | 'cloud' | 'web' | 'reviews';
 
 function MeshBackground({ currentPage }: { currentPage: PageType }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -117,6 +118,7 @@ function MeshBackground({ currentPage }: { currentPage: PageType }) {
       if (activePage === 'iot') themeColor = '245, 158, 11'; // amber/orange
       if (activePage === 'cloud') themeColor = '6, 182, 212'; // sky cyan
       if (activePage === 'web') themeColor = '168, 85, 247'; // neon purple/magenta
+      if (activePage === 'reviews') themeColor = '16, 185, 129'; // emerald green
 
       // Camera configurations
       const focalLength = 380;
@@ -650,6 +652,7 @@ export default function App() {
           currentPage === 'ai' ? 'bg-indigo-500/10' :
           currentPage === 'iot' ? 'bg-amber-500/10' :
           currentPage === 'web' ? 'bg-purple-500/10' :
+          currentPage === 'reviews' ? 'bg-emerald-500/10' :
           'bg-cyan-500/10'
         }`} />
         <div className={`absolute bottom-[20%] right-[15%] w-[55vw] h-[55vw] max-w-[550px] rounded-full blur-[140px] transition-all duration-1000 ${
@@ -658,6 +661,7 @@ export default function App() {
           currentPage === 'ai' ? 'bg-purple-500/5' :
           currentPage === 'iot' ? 'bg-yellow-500/5' :
           currentPage === 'web' ? 'bg-purple-600/5' :
+          currentPage === 'reviews' ? 'bg-emerald-600/5' :
           'bg-blue-500/5'
         }`} />
       </div>
@@ -700,7 +704,7 @@ export default function App() {
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           className="hidden lg:flex items-center gap-0.5 xl:gap-1 bg-neutral-900/90 backdrop-blur rounded-full px-2 xl:px-3 py-1.5 xl:py-2 border border-white/5 shadow-lg shadow-black/50"
         >
-          {(['home', 'security', 'ai', 'iot', 'cloud', 'web'] as const).map((page) => (
+          {(['home', 'security', 'ai', 'iot', 'cloud', 'web', 'reviews'] as const).map((page) => (
             <button
               key={page}
               onClick={() => navigate(page)}
@@ -716,6 +720,7 @@ export default function App() {
               {page === 'iot' && <InteractiveWord word="iot" active={currentPage === 'iot'} />}
               {page === 'cloud' && <InteractiveWord word="cloud" active={currentPage === 'cloud'} />}
               {page === 'web' && <InteractiveWord word="web" active={currentPage === 'web'} />}
+              {page === 'reviews' && <InteractiveWord word="reviews" active={currentPage === 'reviews'} />}
             </button>
           ))}
         </motion.div>
@@ -786,6 +791,7 @@ export default function App() {
               { page: 'iot', label: 'edge computing', sub: 'esp8266 & iot systems' },
               { page: 'cloud', label: 'cloud infrastructure', sub: 'kubernetes & devsecops' },
               { page: 'web', label: 'web development', sub: 'next.js & full-stack applications' },
+              { page: 'reviews', label: 'client reviews', sub: 'interactive feedback board' },
             ] as { page: PageType; label: string; sub: string }[]).map(({ page, label, sub }) => (
               <button
                 key={page}
@@ -1055,6 +1061,18 @@ export default function App() {
             </h2>
           </div>
           <WebNode />
+        </motion.section>
+
+        {/* VIEW 7: CLIENT REVIEWS NODE */}
+        <motion.section
+          id="reviews"
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="scroll-mt-28 py-16 border-t border-white/5"
+        >
+          <ReviewsNode />
         </motion.section>
 
         {/* CONTACT FORM */}
