@@ -29,7 +29,13 @@ export default function ReviewsNode() {
     const saved = localStorage.getItem('client_reviews_data');
     if (saved) {
       try {
-        setReviews(JSON.parse(saved));
+        const parsed = JSON.parse(saved);
+        // Filter out any leftover fake reviews from previous dev runs
+        const filtered = Array.isArray(parsed)
+          ? parsed.filter((r: any) => r && typeof r.id === 'string' && !r.id.startsWith('default-'))
+          : [];
+        setReviews(filtered);
+        localStorage.setItem('client_reviews_data', JSON.stringify(filtered));
       } catch (e) {
         setReviews(DEFAULT_REVIEWS);
       }
