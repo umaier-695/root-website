@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { db, isFirebaseConfigured } from '../firebase';
+import { collection, addDoc, getDocs, query, orderBy } from 'firebase/firestore';
 
 interface Review {
   id: string;
@@ -24,25 +26,54 @@ export default function ReviewsNode() {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [formStatus, setFormStatus] = useState<{ type: 'success' | 'error' | null; message: string }>({ type: null, message: '' });
 
-  // Load reviews from localStorage on mount
+  // Load reviews from Firestore (or fallback to localStorage) on mount
   useEffect(() => {
-    const saved = localStorage.getItem('client_reviews_data');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        // Filter out any leftover fake reviews from previous dev runs
-        const filtered = Array.isArray(parsed)
-          ? parsed.filter((r: any) => r && typeof r.id === 'string' && !r.id.startsWith('default-'))
-          : [];
-        setReviews(filtered);
-        localStorage.setItem('client_reviews_data', JSON.stringify(filtered));
-      } catch (e) {
-        setReviews(DEFAULT_REVIEWS);
+    const fetchReviews = async () => {
+      if (isFirebaseConfigured && db) {
+        try {
+          const q = query(collection(db, 'reviews'), orderBy('createdAt', 'desc'));
+          const querySnapshot = await getDocs(q);
+          const list: Review[] = [];
+          querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            list.push({
+              id: doc.id,
+              name: data.name || 'Anonymous',
+              company: data.company || 'Client',
+              rating: data.rating || 5,
+              message: data.message || '',
+              date: data.date || ''
+            });
+          });
+          setReviews(list.reverse());
+          localStorage.setItem('client_reviews_data', JSON.stringify(list));
+          return;
+        } catch (err) {
+          console.warn("Firestore fetch failed, falling back to localStorage", err);
+        }
       }
-    } else {
-      setReviews(DEFAULT_REVIEWS);
-      localStorage.setItem('client_reviews_data', JSON.stringify(DEFAULT_REVIEWS));
-    }
+
+      // Local storage fallback
+      const saved = localStorage.getItem('client_reviews_data');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          // Filter out any leftover fake reviews from previous dev runs
+          const filtered = Array.isArray(parsed)
+            ? parsed.filter((r: any) => r && typeof r.id === 'string' && !r.id.startsWith('default-'))
+            : [];
+          setReviews(filtered);
+          localStorage.setItem('client_reviews_data', JSON.stringify(filtered));
+        } catch (e) {
+          setReviews(DEFAULT_REVIEWS);
+        }
+      } else {
+        setReviews(DEFAULT_REVIEWS);
+        localStorage.setItem('client_reviews_data', JSON.stringify(DEFAULT_REVIEWS));
+      }
+    };
+
+    fetchReviews();
   }, []);
 
   const handleReviewSubmit = async (e: React.FormEvent) => {
@@ -82,6 +113,22 @@ export default function ReviewsNode() {
       const data = await response.json();
 
       if (data.success) {
+        // Save in Firestore if configured
+        if (isFirebaseConfigured && db) {
+          try {
+            await addDoc(collection(db, 'reviews'), {
+              name: newReview.name,
+              company: newReview.company,
+              rating: newReview.rating,
+              message: newReview.message,
+              date: newReview.date,
+              createdAt: Date.now()
+            });
+          } catch (dbErr) {
+            console.error("Firestore write failed", dbErr);
+          }
+        }
+
         // Update local list
         const updated = [...reviews, newReview];
         setReviews(updated);
