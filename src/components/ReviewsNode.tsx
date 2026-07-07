@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { db, isFirebaseConfigured } from '../firebase';
-import { collection, addDoc, getDocs, query, orderBy } from 'firebase/firestore';
 
 interface Review {
   id: string;
@@ -26,31 +24,21 @@ export default function ReviewsNode() {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [formStatus, setFormStatus] = useState<{ type: 'success' | 'error' | null; message: string }>({ type: null, message: '' });
 
-  // Load reviews from Firestore (or fallback to localStorage) on mount
+  // Load reviews from Vercel KV API (or fallback to localStorage) on mount
   useEffect(() => {
     const fetchReviews = async () => {
-      if (isFirebaseConfigured && db) {
-        try {
-          const q = query(collection(db, 'reviews'), orderBy('createdAt', 'desc'));
-          const querySnapshot = await getDocs(q);
-          const list: Review[] = [];
-          querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            list.push({
-              id: doc.id,
-              name: data.name || 'Anonymous',
-              company: data.company || 'Client',
-              rating: data.rating || 5,
-              message: data.message || '',
-              date: data.date || ''
-            });
-          });
-          setReviews(list.reverse());
-          localStorage.setItem('client_reviews_data', JSON.stringify(list));
-          return;
-        } catch (err) {
-          console.warn("Firestore fetch failed, falling back to localStorage", err);
+      try {
+        const response = await fetch('/api/reviews');
+        if (response.ok) {
+          const list = await response.json();
+          if (Array.isArray(list)) {
+            setReviews(list.reverse());
+            localStorage.setItem('client_reviews_data', JSON.stringify(list));
+            return;
+          }
         }
+      } catch (err) {
+        console.warn("Backend API fetch failed, falling back to localStorage", err);
       }
 
       // Local storage fallback
@@ -96,7 +84,8 @@ export default function ReviewsNode() {
     const ACCESS_KEY = "d3ebcb2b-9ec1-4268-85a0-cfed62657c1c";
 
     try {
-      const response = await fetch("https://api.web3forms.com/submit", {
+      // 1. Send via Web3Forms (email alert)
+      const emailResponse = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -110,27 +99,33 @@ export default function ReviewsNode() {
         }),
       });
 
-      const data = await response.json();
+      const emailData = await emailResponse.json();
 
-      if (data.success) {
-        // Save in Firestore if configured
-        if (isFirebaseConfigured && db) {
-          try {
-            await addDoc(collection(db, 'reviews'), {
+      if (emailData.success) {
+        // 2. Save in Vercel KV Database via Serverless API
+        let dbReview = newReview;
+        try {
+          const dbResponse = await fetch('/api/reviews', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
               name: newReview.name,
               company: newReview.company,
               rating: newReview.rating,
-              message: newReview.message,
-              date: newReview.date,
-              createdAt: Date.now()
-            });
-          } catch (dbErr) {
-            console.error("Firestore write failed", dbErr);
+              message: newReview.message
+            })
+          });
+          if (dbResponse.ok) {
+            dbReview = await dbResponse.json();
           }
+        } catch (dbErr) {
+          console.error("Backend database write failed, using local fallback", dbErr);
         }
 
-        // Update local list
-        const updated = [...reviews, newReview];
+        // 3. Update local UI list & localStorage cache
+        const updated = [...reviews, dbReview];
         setReviews(updated);
         localStorage.setItem('client_reviews_data', JSON.stringify(updated));
 
@@ -148,7 +143,7 @@ export default function ReviewsNode() {
           setFormStatus({ type: null, message: '' });
         }, 3000);
       } else {
-        setFormStatus({ type: 'error', message: data.message });
+        setFormStatus({ type: 'error', message: emailData.message });
       }
     } catch (err) {
       setFormStatus({ type: 'error', message: 'Transmission failed. Please check your network connection.' });
