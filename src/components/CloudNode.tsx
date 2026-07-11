@@ -10,22 +10,38 @@ interface BrutalistCardProps {
 function BrutalistCard({ children, className = '', shadowColor = '#18f700' }: BrutalistCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [coords, setCoords] = useState({ x: 0, y: 0 });
-  const [isHovered, setIsHovered] = useState(false);
+  const [isActive, setIsActive] = useState(false);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const updateTilt = (clientX: number, clientY: number) => {
     if (!cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
     const width = rect.width;
     const height = rect.height;
-    const mouseX = e.clientX - rect.left - width / 2;
-    const mouseY = e.clientY - rect.top - height / 2;
+    const mouseX = clientX - rect.left - width / 2;
+    const mouseY = clientY - rect.top - height / 2;
     const rotateX = -(mouseY / (height / 2)) * 6;
     const rotateY = (mouseX / (width / 2)) * 6;
     setCoords({ x: rotateX, y: rotateY });
   };
 
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    updateTilt(e.clientX, e.clientY);
+  };
+
   const handleMouseLeave = () => {
-    setIsHovered(false);
+    setIsActive(false);
+    setCoords({ x: 0, y: 0 });
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (e.touches.length === 0) return;
+    const touch = e.touches[0];
+    updateTilt(touch.clientX, touch.clientY);
+    setIsActive(true);
+  };
+
+  const handleTouchEnd = () => {
+    setIsActive(false);
     setCoords({ x: 0, y: 0 });
   };
 
@@ -33,13 +49,16 @@ function BrutalistCard({ children, className = '', shadowColor = '#18f700' }: Br
     <div
       ref={cardRef}
       onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
+      onMouseEnter={() => setIsActive(true)}
       onMouseLeave={handleMouseLeave}
+      onTouchMove={handleTouchMove}
+      onTouchStart={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
       className={`bg-white text-black border-4 border-black p-6 select-none flex flex-col justify-between transition-all duration-300 hover:border-cyan-500 ${className}`}
       style={{
         transform: `perspective(1000px) rotateX(${coords.x}deg) rotateY(${coords.y}deg)`,
-        transition: isHovered ? 'none' : 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-        boxShadow: isHovered ? `10px 10px 0px ${shadowColor}` : `6px 6px 0px ${shadowColor}`
+        transition: isActive ? 'none' : 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+        boxShadow: isActive ? `10px 10px 0px ${shadowColor}` : `6px 6px 0px ${shadowColor}`
       }}
     >
       {children}

@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import type { MouseEvent } from 'react';
+import type { MouseEvent, TouchEvent } from 'react';
 
 interface HomeNodeProps {
   onNavigate: (page: string) => void;
@@ -8,34 +8,56 @@ interface HomeNodeProps {
 function GlowCard({ children, className = '', onClick }: { children: React.ReactNode; className?: string; onClick?: () => void }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [coords, setCoords] = useState({ x: 0, y: 0 });
+  const [isTouching, setIsTouching] = useState(false);
 
-  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+  const updateCoords = (clientX: number, clientY: number) => {
     if (!cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
     setCoords({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
+      x: clientX - rect.left,
+      y: clientY - rect.top,
     });
+  };
+
+  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+    updateCoords(e.clientX, e.clientY);
+  };
+
+  const handleTouchMove = (e: TouchEvent<HTMLDivElement>) => {
+    if (e.touches.length === 0) return;
+    const touch = e.touches[0];
+    updateCoords(touch.clientX, touch.clientY);
+    setIsTouching(true);
+  };
+
+  const handleTouchEnd = () => {
+    setIsTouching(false);
   };
 
   return (
     <div
       ref={cardRef}
       onMouseMove={handleMouseMove}
+      onTouchMove={handleTouchMove}
+      onTouchStart={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
       onClick={onClick}
       className={`relative overflow-hidden group rounded-3xl ${className}`}
     >
       {/* Glow Effect Overlay */}
       <div
-        className="pointer-events-none absolute -inset-px rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0"
+        className="pointer-events-none absolute -inset-px rounded-3xl transition-opacity duration-300 z-0"
         style={{
+          opacity: isTouching ? 1 : undefined,
           background: `radial-gradient(300px circle at ${coords.x}px ${coords.y}px, rgba(24, 247, 0, 0.095), transparent 80%)`,
         }}
+        // Also visible on hover (CSS group-hover handles desktop)
       />
-      {/* Outer Border Glow */}
+      {/* Outer Border Glow — shown on touch OR hover */}
       <div
-        className="pointer-events-none absolute -inset-px rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 border border-emerald-400/45"
+        className="pointer-events-none absolute -inset-px rounded-3xl transition-opacity duration-300 z-10 border border-emerald-400/45"
         style={{
+          opacity: isTouching ? 1 : undefined,
           maskImage: `radial-gradient(150px circle at ${coords.x}px ${coords.y}px, black, transparent)`,
           WebkitMaskImage: `radial-gradient(150px circle at ${coords.x}px ${coords.y}px, black, transparent)`,
         }}

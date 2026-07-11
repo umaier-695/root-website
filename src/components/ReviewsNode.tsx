@@ -316,6 +316,8 @@ export default function ReviewsNode() {
                         onClick={() => setRating(star)}
                         onMouseEnter={() => setHoverRating(star)}
                         onMouseLeave={() => setHoverRating(null)}
+                        onTouchStart={() => setHoverRating(star)}
+                        onTouchEnd={() => { setRating(star); setHoverRating(null); }}
                         disabled={formSubmitted}
                         className="focus:outline-none transition-transform active:scale-95"
                       >
